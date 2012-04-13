@@ -1,8 +1,8 @@
 # --
 # Kernel/Modules/AgentTicketBulk.pm - to do bulk actions on tickets
-# Copyright (C) 2003-2011 OTRS AG, http://otrs.com/
+# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
 # --
-# $Id: AgentTicketBulk.pm,v 1.1 2011-10-10 09:30:05 te Exp $
+# $Id: AgentTicketBulk.pm,v 1.1.2.1 2012-04-13 11:03:09 te Exp $
 # $OldId: AgentTicketBulk.pm,v 1.75.2.4 2011/04/11 18:18:39 mp Exp $
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
@@ -25,7 +25,7 @@ use Kernel::System::MasterSlave;
 # ---
 
 use vars qw($VERSION);
-$VERSION = qw($Revision: 1.1 $) [1];
+$VERSION = qw($Revision: 1.1.2.1 $) [1];
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -203,6 +203,7 @@ sub Run {
     my $MasterSlaveFollowUpdatedMaster        = $Self->{ConfigObject}->Get('MasterSlave::FollowUpdatedMaster') || 0;
     my $MasterSlaveKeepParentChildAfterUnset  = $Self->{ConfigObject}->Get('MasterSlave::KeepParentChildAfterUnset') || 0;
     my $MasterSlaveKeepParentChildAfterUpdate = $Self->{ConfigObject}->Get('MasterSlave::KeepParentChildAfterUpdate') || 0;
+    $GetParam{$MasterSlaveTicketFreeText}     = $Self->{ParamObject}->GetParam( Param => $MasterSlaveTicketFreeText ) || '';
 # ---
 
     TICKET_ID:
