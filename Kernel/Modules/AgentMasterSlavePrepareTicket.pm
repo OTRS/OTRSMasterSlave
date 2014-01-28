@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AgentMasterSlavePrepareTicket.pm - to prepare master/slave pull downs
-# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # $Id: AgentMasterSlavePrepareTicket.pm,v 1.6 2012-04-23 10:57:28 te Exp $
 # --

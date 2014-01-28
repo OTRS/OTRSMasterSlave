@@ -1,6 +1,6 @@
 # --
 # Kernel/Language/de_OTRSMasterSlave.pm - provides de language translation
-# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # $Id: de_OTRSMasterSlave.pm,v 1.2 2012-02-21 01:03:45 cg Exp $
 # --

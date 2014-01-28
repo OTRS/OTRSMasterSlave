@@ -1,6 +1,6 @@
 # --
 # AgentTicketBulk.dtl - provides HTML form for bulk mask
-# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # $Id: AgentTicketBulk.dtl,v 1.2 2012-02-20 04:10:05 cg Exp $
 # $OldId: AgentTicketBulk.dtl,v 1.70 2011/06/01 15:22:30 mb Exp $

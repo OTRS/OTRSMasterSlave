@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AgentTicketMasterSlave.pm - common file for several modules
-# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # $Id: AgentTicketMasterSlave.pm,v 1.14 2012-05-04 11:51:23 te Exp $
 # $OldId: AgentTicketMasterSlave.pm,v 1.75 2012/02/03 18:23:12 cr Exp $

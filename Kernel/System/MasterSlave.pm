@@ -1,6 +1,6 @@
 # --
 # Kernel/System/MasterSlave.pm - to handle ticket master slave tasks
-# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # $Id: MasterSlave.pm,v 1.6 2012-05-04 11:51:23 te Exp $
 # --
@@ -305,7 +305,7 @@ sub MasterSlave {
                 next if !$Ticket{ 'DynamicField_' . $MasterSlaveDynamicFieldName };
                 next
                     if $Ticket{ 'DynamicField_' . $MasterSlaveDynamicFieldName }
-                        !~ /^SlaveOf:(.*?)$/;
+                    !~ /^SlaveOf:(.*?)$/;
 
                 # remember ticket id
                 push @SlaveTicketIDs, $LinkedTicketID;

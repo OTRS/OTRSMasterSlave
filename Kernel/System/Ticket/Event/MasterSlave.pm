@@ -1,6 +1,6 @@
 # --
 # Kernel/System/Ticket/Event/MasterSlave.pm - master slave ticket
-# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # $Id: MasterSlave.pm,v 1.9 2012-05-18 14:48:20 te Exp $
 # --
@@ -212,6 +212,8 @@ sub Run {
                 TicketNumber => $TicketSlave{TicketNumber},
                 Subject => $Article{Subject} || '',
             );
+            use Data::Dumper;
+            print STDERR Dumper( \%Article );
 
             # send article again
             $Self->{TicketObject}->ArticleSend(

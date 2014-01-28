@@ -1,6 +1,6 @@
 # --
 # OTRSMasterSlave.pm - code to excecute during package installation
-# Copyright (C) 2003-2012 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
 # --
 # $Id: OTRSMasterSlave.pm,v 1.24 2012-06-19 11:48:17 te Exp $
 # --
