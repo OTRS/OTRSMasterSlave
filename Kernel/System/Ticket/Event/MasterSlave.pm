@@ -212,8 +212,17 @@ sub Run {
                 TicketNumber => $TicketSlave{TicketNumber},
                 Subject => $Article{Subject} || '',
             );
-            use Data::Dumper;
-            print STDERR Dumper( \%Article );
+
+            # exchange Customer from MasterTicket for the one into the Slave
+            my $Search = $Self->{CustomerUserObject}->CustomerName(
+                UserLogin => $Article{CustomerUserID},
+            ) || '';
+            my $Replace = $Self->{CustomerUserObject}->CustomerName(
+                UserLogin => $TicketSlave{CustomerUserID},
+            ) || '';
+            if ( $Search && $Replace ) {
+                $Article{Body} =~ s{ \Q$Search\E }{$Replace}xms;
+            }
 
             # send article again
             $Self->{TicketObject}->ArticleSend(
