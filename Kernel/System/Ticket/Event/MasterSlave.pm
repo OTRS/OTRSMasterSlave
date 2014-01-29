@@ -213,15 +213,23 @@ sub Run {
                 Subject => $Article{Subject} || '',
             );
 
-            # exchange Customer from MasterTicket for the one into the Slave
-            my $Search = $Self->{CustomerUserObject}->CustomerName(
-                UserLogin => $Article{CustomerUserID},
-            ) || '';
-            my $Replace = $Self->{CustomerUserObject}->CustomerName(
-                UserLogin => $TicketSlave{CustomerUserID},
-            ) || '';
-            if ( $Search && $Replace ) {
-                $Article{Body} =~ s{ \Q$Search\E }{$Replace}xms;
+            # exchange Customer from MasterTicket for the one into the SlaveTicket
+            my $ReplaceOnNoteTypes
+                = $Self->{ConfigObject}->Get('ReplaceCustomerRealNameOnSlaveArticleTypes');
+            if (
+                defined $ReplaceOnNoteTypes->{ $Article{ArticleType} } &&
+                $ReplaceOnNoteTypes->{ $Article{ArticleType} } eq '1'
+                )
+            {
+                my $Search = $Self->{CustomerUserObject}->CustomerName(
+                    UserLogin => $Article{CustomerUserID},
+                ) || '';
+                my $Replace = $Self->{CustomerUserObject}->CustomerName(
+                    UserLogin => $TicketSlave{CustomerUserID},
+                ) || '';
+                if ( $Search && $Replace ) {
+                    $Article{Body} =~ s{ \Q$Search\E }{$Replace}xmsg;
+                }
             }
 
             # send article again

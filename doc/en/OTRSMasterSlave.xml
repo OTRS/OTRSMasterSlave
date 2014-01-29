@@ -55,6 +55,21 @@
             Additional setings are available for the advanced module, they can founded on the "Configuration" for this module.
         </para>
     </sect1>
+
+
+    <sect1>
+        <title>Replace customer's from Master ticket</title>
+        <para>
+            The sysconfig option 'ReplaceCustomerRealNameOnSlaveArticleTypes' enables
+            the posibility to replace the customer's real name from a Master ticket
+            with the one for the current Slave ticket into the articles added to a
+            Slave ticket due the MasterSlave feature.
+        </para>
+        <para>
+            For do it possible just enable the posible ArticleTypes on the mentioned
+            sysconfig setting.
+        </para>
+    </sect1>
 </chapter>
 
 <chapter>
@@ -131,36 +146,167 @@ shell> $OTRS_HOME/bin/otrs.PackageManager.pl -a install -p /path/to/$Name-$Versi
 
 <chapter>
     <title>Configuration</title>
-    <sect1>
-        <title>MasterTicketFreeTextField</title>
-        <para>
-            Define free text field for master ticket feature. .
-        </para>
-    </sect1>
-    <sect1>
-        <title>MasterSlave::AdvancedEnabled</title>
-        <para>
-            Enable the advanced MasterSlave part of the feature.
-        </para>
-    </sect1>
-    <sect1>
-        <title>MasterSlave::UnsetMasterSlave</title>
-        <para>
-            Enable the feature to unset the MasterSlave state of a ticket in the advanced MasterSlave mode.
-        </para>
-    </sect1>
-    <sect1>
-        <title>MasterSlave::UpdateMasterSlave</title>
-        <para>
-            Enable the feature to change the MasterSlave state of a ticket in the advanced MasterSlave mode.
-        </para>
-    </sect1>
-    <sect1>
-        <title>MasterSlave::FollowUpdatedMaster</title>
-        <para>
-            Enable the feature that slave tickets follow the master ticket to a new master in the advanced MasterSlave mode.
-        </para>
-    </sect1>
+    <para>The package can be configured via the SysConfig in the Admin Interface. The following configuration options are available:</para>
+    <section>
+        <title>MasterSlave::DynamicField.</title>
+        <para>Group: Ticket, Subgroup: MasterSlave.</para>
+        <para>Define dynamic field name for master ticket feature.</para>
+    </section>
+    <section>
+        <title>MasterSlave::AdvancedEnabled.</title>
+        <para>Group: Ticket, Subgroup: MasterSlave.</para>
+        <para>Enable the advanced MasterSlave part of the feature.</para>
+    </section>
+    <section>
+        <title>MasterSlave::UnsetMasterSlave.</title>
+        <para>Group: Ticket, Subgroup: MasterSlave.</para>
+        <para>Enable the feature to unset the MasterSlave state of a ticket in the advanced MasterSlave mode.</para>
+    </section>
+    <section>
+        <title>MasterSlave::UpdateMasterSlave.</title>
+        <para>Group: Ticket, Subgroup: MasterSlave.</para>
+        <para>Enable the feature to change the MasterSlave state of a ticket in the advanced MasterSlave mode.</para>
+    </section>
+    <section>
+        <title>MasterSlave::FollowUpdatedMaster.</title>
+        <para>Group: Ticket, Subgroup: MasterSlave.</para>
+        <para>Enable the feature that slave tickets follow the master ticket to a new master in the advanced MasterSlave mode.</para>
+    </section>
+    <section>
+        <title>Ticket::EventModulePost###MasterSlave.</title>
+        <para>Group: Ticket, Subgroup: MasterSlave.</para>
+        <para>Registration of the ticket event module.</para>
+    </section>
+    <section>
+        <title>PreApplicationModule###AgentMasterSlaveTicketPrepare.</title>
+        <para>Group: Ticket, Subgroup: MasterSlave.</para>
+        <para>This module is preparing master/slave pulldown in email and phone ticket.</para>
+    </section>
+    <section>
+        <title>Frontend::Module###AgentTicketMasterSlave.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::ModuleRegistration.</para>
+        <para>Frontend module registration for the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::MenuModule###480-MasterSlave.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::MenuModule.</para>
+        <para>Shows a link in the menu to change the MasterSlave status of a ticket in the ticket zoom view of the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Permission.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Required permissions to use the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###RequiredLock.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines if a ticket lock is required in the ticket MasterSlave screen of a zoomed ticket in the agent interface (if the ticket isn't locked yet, the ticket gets locked and the current agent will be set automatically as its owner).</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###TicketType.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Sets the ticket type in the ticket MasterSlave screen of a zoomed ticket in the agent interface (Ticket::Type needs to be activated).</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Service.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Sets the service in the ticket MasterSlave screen of a zoomed ticket in the agent interface (Ticket::Service needs to be activated).</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Owner.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Sets the ticket owner in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###OwnerMandatory.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Sets if ticket owner must be selected by the agent.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Responsible.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Sets the responsible agent of the ticket in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###State.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>If a note is added by an agent, sets the state of the ticket in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###StateType.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines the next state of a ticket after adding a note, in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###StateDefault.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines the default next state of a ticket after adding a note, in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Note.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Allows adding notes in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Subject.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Sets the default subject for notes added in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Body.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Sets the default body text for notes added in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###InvolvedAgent.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Shows a list of all the involved agents on this ticket, in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###InformAgent.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Shows a list of all the possible agents (all agents with note permissions on the queue/ticket) to determine who should be informed about this note, in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###ArticleTypeDefault.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines the default type of the note in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###ArticleTypes.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Specifies the different note types that will be used in the system.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Priority.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Shows the ticket priority options in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###PriorityDefault.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines the default ticket priority in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###Title.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Shows the title fields in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###HistoryType.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines the history type for the ticket MasterSlave screen action, which gets used for ticket history in the agent interface.</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###HistoryComment.</title>
+        <para>Group: Ticket, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines the history comment for the ticket MasterSlave screen action, which gets used for ticket history in the agent interface.</para>
+    </section>
+    <section>
+        <title>ReplaceCustomerRealNameOnSlaveArticleTypes.</title>
+        <para>Group: OTRSMasterSlave, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Specifies the different article types where the real name from Master ticket will be replaced with the one in the Slave ticket.</para>
+    </section>
 </chapter>
 
 <chapter>
