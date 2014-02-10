@@ -156,6 +156,10 @@ sub Run {
             Name         => 'MasterTicketAction: ArticleSend',
         );
 
+        # just a flag for know when the first slave ticket is present
+        my $FirstSlaveTicket = 1;
+        my $TmpArticleBody;
+
         # perform action on linked tickets
         for my $TicketID (@TicketIDs) {
             next if !$Self->_LoopCheck(
@@ -221,6 +225,16 @@ sub Run {
                 $ReplaceOnNoteTypes->{ $Article{ArticleType} } eq '1'
                 )
             {
+                if ($FirstSlaveTicket) {
+                    $FirstSlaveTicket = 0;
+                    $TmpArticleBody   = $Article{Body};
+                }
+                else {
+                    # get body from tmp in oder to get it
+                    # without changes from prev slave tickets
+                    $Article{Body} = $TmpArticleBody;
+                }
+
                 my $Search = $Self->{CustomerUserObject}->CustomerName(
                     UserLogin => $Article{CustomerUserID},
                 ) || '';
