@@ -15,6 +15,8 @@ use Kernel::System::LinkObject;
 use Kernel::System::DynamicField;
 use Kernel::System::DynamicField::Backend;
 
+use Kernel::System::VariableCheck qw(:all);
+
 sub new {
     my ( $Type, %Param ) = @_;
 
@@ -146,6 +148,19 @@ sub Run {
         my @Index = $Self->{TicketObject}->ArticleIndex( TicketID => $Param{Data}->{TicketID} );
         return 1 if !@Index;
         my %Article = $Self->{TicketObject}->ArticleGet( ArticleID => $Index[$#Index] );
+
+        # check if the send mail is of type forward
+        my $IsForward = $Self->_ArticleHistoryTypeGiven(
+            TicketID    => $Param{Data}->{TicketID},
+            ArticleID   => $Article{ArticleID},
+            HistoryType => 'Forward',
+            UserID      => $Param{UserID},
+        );
+
+        # if the sysconfig is disabled and the new article is an forward article
+        # then we dont want to have the forward for the slave tickets
+        my $ForwardSlaves = $Self->{ConfigObject}->Get('MasterSlave::ForwardSlaves');
+        return 1 if $IsForward && !$ForwardSlaves;
 
         # mark ticket to prevent a loop
         $Self->{TicketObject}->HistoryAdd(
@@ -524,6 +539,61 @@ sub _LoopCheck {
         }
     }
     return 1;
+}
+
+=item _ArticleHistoryTypeGiven()
+
+Check if history type for article is given
+
+    my $IsHistoryType = $EventObject->_ArticleHistoryTypeGiven(
+        TicketID    => $TicketID,
+        ArticleID   => $ArticleID,
+        HistoryType => 'Forward',
+        UserID      => $UserID,
+    );
+
+Returns
+
+   my $IsHistoryType = 1;
+
+=cut
+
+sub _ArticleHistoryTypeGiven {
+    my ( $Self, %Param ) = @_;
+
+    # check needed stuff
+    for (qw(TicketID ArticleID HistoryType UserID)) {
+        if ( !$Param{$_} ) {
+            $Self->{LogObject}->Log( Priority => 'error', Message => "Need $_!" );
+            return;
+        }
+    }
+
+    my $TicketID    = $Param{TicketID};
+    my $ArticleID   = $Param{ArticleID};
+    my $HistoryType = $Param{HistoryType};
+    my $UserID      = $Param{UserID};
+
+    my @Lines = $Self->{TicketObject}->HistoryGet(
+        TicketID => $TicketID,
+        UserID   => $UserID,
+    );
+
+    my $Matched = 0;
+
+    return $Matched if !IsArrayRefWithData( \@Lines );
+
+    HISTORY:
+    for my $Data ( reverse @Lines ) {
+        next HISTORY if $Data->{ArticleID} != $ArticleID;
+        next HISTORY if $Data->{HistoryType} ne $HistoryType;
+
+        $Matched = 1;
+
+        last HISTORY;
+    }
+
+    return $Matched;
 }
 
 1;
