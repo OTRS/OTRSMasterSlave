@@ -14,6 +14,7 @@ use warnings;
 
 use Kernel::Language;
 use Kernel::System::DynamicField;
+use Data::Compare;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -86,6 +87,10 @@ sub PreRun {
     $Self->{ConfigObject}->{"Ticket::Frontend::$Self->{Action}"}->{DynamicField}
         ->{$MasterSlaveDynamicField} = 1;
 
+    # check if PossibleValues has changed
+    my %ValuesOld = %{ $DynamicField->{Config}->{PossibleValues} };
+    # /check if PossibleValues has changed
+
     # set dynamic field possible values
     $DynamicField->{Config}->{PossibleValues} = {
         Master => $Self->{LanguageObject}->Get('New Master Ticket'),
@@ -110,6 +115,11 @@ sub PreRun {
             $Self->{LanguageObject}->Get('Slave of Ticket#')
             . "$CurrentTicket{TicketNumber}: $CurrentTicket{Title}";
     }
+
+    # check if PossibleValues has changed, only update (and delete while cache) if needed
+    my $Diff = Compare( \%ValuesOld , $DynamicField->{Config}->{PossibleValues} );
+    return if $Diff;
+    # /check if PossibleValues has changed, only update (and delete while cache) if needed
 
     # set new dynamic field values
     my $SuccessTicketField = $Self->{DynamicFieldObject}->DynamicFieldUpdate(
