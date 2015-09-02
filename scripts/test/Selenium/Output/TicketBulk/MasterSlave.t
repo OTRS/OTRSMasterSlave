@@ -98,11 +98,11 @@ $Selenium->RunTest(
         $Selenium->get("${ScriptAlias}index.pl?Action=AgentTicketSearch");
 
         # wait until form has loaded, if neccessary
-        $Selenium->WaitFor( JavaScript => "return \$('#SearchProfile').length" );
+        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#SearchProfile').length" );
 
         # search test created tickets by title
         $Selenium->find_element( "#Attribute_Search", 'css' )->click();
-        $Selenium->WaitFor( JavaScript => 'return $("a.jstree-anchor:visible").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("a.jstree-anchor:visible").length' );
         $Selenium->find_element("//*[text()='Title']")->click();
         $Selenium->find_element( ".AddButton", 'css' )->click();
         $Selenium->find_element( "Title",      'name' )->send_keys($TicketTitle);
@@ -116,15 +116,16 @@ $Selenium->RunTest(
 
         my $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
+        $Selenium->WaitFor( WindowCount => 2 );
 
         # set test ticket as master ticket
         $Selenium->find_element( "#DynamicField_MasterSlave_Search", 'css' )->click();
-        $Selenium->WaitFor( JavaScript => 'return $("a.jstree-anchor:visible").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("a.jstree-anchor:visible").length' );
         $Selenium->find_element("//*[text()='New Master Ticket']")->click();
         $Selenium->find_element("//button[\@id='submitRichText'][\@type='submit']")->click();
 
         $Selenium->switch_to_window( $Handles->[0] );
-        sleep 1;
+        $Selenium->WaitFor( WindowCount => 1 );
 
         # select second and third test created ticket
         $Selenium->find_element("//input[\@value='$TicketIDs[1]']")->click();
@@ -135,15 +136,17 @@ $Selenium->RunTest(
 
         $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
+        $Selenium->WaitFor( WindowCount => 2 );
 
         # set test tickets as slave tickets
         my $SlaveAutoComplete = "Slave of Ticket#$TicketNumbers[0]: $TicketTitle";
         $Selenium->find_element( "#DynamicField_MasterSlave_Search", 'css' )->click();
-        $Selenium->WaitFor( JavaScript => 'return $("a.jstree-anchor:visible").length' );
+        $Selenium->WaitFor( JavaScript => 'return typeof($) === "function" && $("a.jstree-anchor:visible").length' );
         $Selenium->find_element("//*[text()='$SlaveAutoComplete']")->click();
         $Selenium->find_element("//button[\@id='submitRichText'][\@type='submit']")->click();
 
         $Selenium->switch_to_window( $Handles->[0] );
+        $Selenium->WaitFor( WindowCount => 1 );
 
         # navigate to master ticket zoom view
         $Selenium->get("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
