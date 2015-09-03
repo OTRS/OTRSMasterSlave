@@ -19,8 +19,14 @@ my $HelperObject              = $Kernel::OM->Get('Kernel::System::UnitTest::Help
 my $DynamicFieldObject        = $Kernel::OM->Get('Kernel::System::DynamicField');
 my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 my $ParamObject               = $Kernel::OM->Get('Kernel::System::Web::Request');
-my $LayoutObject              = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-my $ConfigObject              = $Kernel::OM->Get('Kernel::Config');
+
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::Output::HTML::Layout' => {
+        UserID => 1,
+    },
+);
+my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
 
 # ------------------------------------------------------------ #
 # make preparations
@@ -32,27 +38,172 @@ my $MasterSlaveDynamicFieldData = $DynamicFieldObject->DynamicFieldGet(
     Name => $MasterSlaveDynamicField,
 );
 
-# get master/slave dynamic field possible values
-my $PossibleValues = $DynamicFieldBackendObject->PossibleValuesGet(
-    DynamicFieldConfig => $MasterSlaveDynamicFieldData,
-);
-
 # define tests
 my @Tests = (
     {
-        Name   => 'MasterSlave',
+        Name   => 'MasterSlave - Possible Values Filter',
         Config => {
             DynamicFieldConfig   => $MasterSlaveDynamicFieldData,
-            PossibleValuesFilter => $PossibleValues,
-            LayoutObject         => $LayoutObject,
-            ParamObject          => $ParamObject,
+            PossibleValuesFilter => {
+                Master => 'New Master Ticket',
+            },
+            LayoutObject => $LayoutObject,
+            ParamObject  => $ParamObject,
         },
         ExpectedResults => {
             Field =>
                 '<select class="DynamicFieldText Modernize" id="DynamicField_MasterSlave" name="DynamicField_MasterSlave" size="1">
-  <option value="" selected="selected">-</option>
   <option value="Master">New Master Ticket</option>
 </select>
+',
+            Label => '<label id="LabelDynamicField_MasterSlave" for="DynamicField_MasterSlave">
+Master Ticket:
+</label>
+'
+        },
+    },
+    {
+        Name   => 'UnsetMasterSlave - Possible Values Filter',
+        Config => {
+            DynamicFieldConfig   => $MasterSlaveDynamicFieldData,
+            PossibleValuesFilter => {
+                Master      => 'New Master Ticket',
+                UnsetMaster => 'Unset Master Tickets',
+                UnsetSlave  => 'Unset Slave Tickets',
+            },
+            LayoutObject => $LayoutObject,
+            ParamObject  => $ParamObject,
+        },
+        ExpectedResults => {
+            Field =>
+                '<select class="DynamicFieldText Modernize" id="DynamicField_MasterSlave" name="DynamicField_MasterSlave" size="1">
+  <option value="Master">New Master Ticket</option>
+  <option value="UnsetMaster">Unset Master Tickets</option>
+  <option value="UnsetSlave">Unset Slave Tickets</option>
+</select>
+',
+            Label => '<label id="LabelDynamicField_MasterSlave" for="DynamicField_MasterSlave">
+Master Ticket:
+</label>
+'
+        },
+    },
+    {
+        Name   => 'MasterSlave: No value ',
+        Config => {
+            DynamicFieldConfig => $MasterSlaveDynamicFieldData,
+            LayoutObject       => $LayoutObject,
+            ParamObject        => $ParamObject,
+            Class              => 'MyClass',
+            UseDefaultValue    => 0,
+        },
+        ExpectedResults => {
+            Field => <<"EOF" . '</select>',
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_MasterSlave" name="DynamicField_MasterSlave" size="1">
+  <option value="">-</option>
+  <option value="Master">New Master Ticket</option>
+EOF
+            Label => '<label id="LabelDynamicField_MasterSlave" for="DynamicField_MasterSlave">
+Master Ticket:
+</label>
+'
+        },
+    },
+    {
+        Name   => 'MasterSlave: No value / Default',
+        Config => {
+            DynamicFieldConfig => $MasterSlaveDynamicFieldData,
+            LayoutObject       => $LayoutObject,
+            ParamObject        => $ParamObject,
+            Class              => 'MyClass',
+        },
+        ExpectedResults => {
+            Field => <<"EOF" . '</select>',
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_MasterSlave" name="DynamicField_MasterSlave" size="1">
+  <option value="" selected="selected">-</option>
+  <option value="Master">New Master Ticket</option>
+EOF
+            Label => '<label id="LabelDynamicField_MasterSlave" for="DynamicField_MasterSlave">
+Master Ticket:
+</label>
+'
+        },
+    },
+    {
+        Name   => 'MasterSlave: Value direct',
+        Config => {
+            DynamicFieldConfig => $MasterSlaveDynamicFieldData,
+            LayoutObject       => $LayoutObject,
+            ParamObject        => $ParamObject,
+            Value              => 'Master',
+            Class              => 'MyClass',
+            UseDefaultValue    => 0,
+        },
+        ExpectedResults => {
+            Field => <<"EOF" . '</select>',
+<select class="DynamicFieldText Modernize MyClass" id="DynamicField_MasterSlave" name="DynamicField_MasterSlave" size="1">
+  <option value="">-</option>
+  <option value="Master" selected="selected">New Master Ticket</option>
+EOF
+            Label => '<label id="LabelDynamicField_MasterSlave" for="DynamicField_MasterSlave">
+Master Ticket:
+</label>
+'
+        },
+    },
+    {
+        Name   => 'MasterSlave: Mandatory',
+        Config => {
+            DynamicFieldConfig => $MasterSlaveDynamicFieldData,
+            LayoutObject       => $LayoutObject,
+            ParamObject        => $ParamObject,
+            Value              => 'Master',
+            Class              => 'MyClass',
+            UseDefaultValue    => 0,
+            Mandatory          => 1,
+        },
+        ExpectedResults => {
+            Field =>
+                '<select class="DynamicFieldText Modernize MyClass Validate_Required" id="DynamicField_MasterSlave" name="DynamicField_MasterSlave" size="1">
+  <option value="">-</option>
+  <option value="Master" selected="selected">New Master Ticket</option>
+</select>
+<div id="DynamicField_MasterSlaveError" class="TooltipErrorMessage">
+    <p>
+        This field is required.
+    </p>
+</div>
+',
+            Label => '<label id="LabelDynamicField_MasterSlave" for="DynamicField_MasterSlave" class="Mandatory">
+    <span class="Marker">*</span>
+Master Ticket:
+</label>
+'
+        },
+    },
+    {
+        Name   => 'MasterSlave: Server Error',
+        Config => {
+            DynamicFieldConfig => $MasterSlaveDynamicFieldData,
+            LayoutObject       => $LayoutObject,
+            ParamObject        => $ParamObject,
+            Value              => 'Master',
+            Class              => 'MyClass',
+            UseDefaultValue    => 0,
+            ServerError        => 1,
+            ErrorMessage       => 'This is an error.'
+        },
+        ExpectedResults => {
+            Field =>
+                '<select class="DynamicFieldText Modernize MyClass ServerError" id="DynamicField_MasterSlave" name="DynamicField_MasterSlave" size="1">
+  <option value="">-</option>
+  <option value="Master" selected="selected">New Master Ticket</option>
+</select>
+<div id="DynamicField_MasterSlaveServerError" class="TooltipErrorMessage">
+    <p>
+        This is an error.
+    </p>
+</div>
 ',
             Label => '<label id="LabelDynamicField_MasterSlave" for="DynamicField_MasterSlave">
 Master Ticket:
