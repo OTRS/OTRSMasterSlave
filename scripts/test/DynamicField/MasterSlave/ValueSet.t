@@ -107,34 +107,6 @@ $Self->True(
     "LinkKeyList() Master/Slave link found - Ticket ID $TicketIDs[0] and $TicketIDs[1]",
 );
 
-# set second test ticket as master ticket
-$Success = $DynamicFieldBackendObject->ValueSet(
-    DynamicFieldConfig => $MasterSlaveDynamicFieldData,
-    FieldID            => $MasterSlaveDynamicFieldData->{ID},
-    ObjectID           => $TicketIDs[1],
-    Value              => 'Master',
-    UserID             => 1,
-);
-$Self->True(
-    $Success,
-    "ValueSet() Ticket ID $TicketIDs[1] DynamicField $MasterSlaveDynamicField updated as MasterTicket",
-);
-
-# verify there is no more parent-child link between two tickets
-%LinkKeyList = $LinkObject->LinkKeyList(
-    Object1   => 'Ticket',
-    Key1      => $TicketIDs[0],
-    Object2   => 'Ticket',
-    State     => 'Valid',
-    Type      => 'ParentChild',
-    Direction => 'Target',
-    UserID    => 1,
-);
-$Self->True(
-    !IsHashRefWithData( \%LinkKeyList ),
-    "LinkKeyList() Master/Slave link removed - Ticket ID $TicketIDs[0] and $TicketIDs[1]",
-);
-
 # ------------------------------------------------------------ #
 # test UnsetMaster|UnsetSlave
 # ------------------------------------------------------------ #
