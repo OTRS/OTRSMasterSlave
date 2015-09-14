@@ -126,6 +126,7 @@ $Selenium->RunTest(
 
         $Selenium->switch_to_window( $Handles->[0] );
         $Selenium->WaitFor( WindowCount => 1 );
+        sleep 1;
 
         # select second and third test created ticket
         $Selenium->find_element("//input[\@value='$TicketIDs[1]']")->click();
