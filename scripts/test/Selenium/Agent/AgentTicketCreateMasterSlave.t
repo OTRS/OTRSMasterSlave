@@ -98,13 +98,11 @@ $Selenium->RunTest(
         my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
 
         # get master test phone ticket data
-        my %MasterTicketIDs = $TicketObject->TicketSearch(
+        my ( $MasterTicketID, $MasterTicketNumber ) = $TicketObject->TicketSearch(
             Result         => 'HASH',
             Limit          => 1,
             CustomerUserID => $TestCustomerPhone,
         );
-        my $MasterTicketNumber = (%MasterTicketIDs)[1];
-        my $MasterTicketID     = (%MasterTicketIDs)[0];
 
         # add new test customer for testing
         my $TestCustomerEmail = $Helper->TestCustomerUserCreate();
@@ -131,13 +129,11 @@ $Selenium->RunTest(
         $Selenium->WaitFor( JavaScript => 'return $("form").length' );
 
         # get slave test email ticket data
-        my %SlaveTicketIDs = $TicketObject->TicketSearch(
+        my ( $SlaveTicketID, $SlaveTicketNumber ) = $TicketObject->TicketSearch(
             Result         => 'HASH',
             Limit          => 1,
             CustomerUserID => $TestCustomerEmail,
         );
-        my $SlaveTicketNumber = (%SlaveTicketIDs)[1];
-        my $SlaveTicketID     = (%SlaveTicketIDs)[0];
 
         # navigate to ticket zoom page of created master test ticket
         $Selenium->get("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$MasterTicketID");
