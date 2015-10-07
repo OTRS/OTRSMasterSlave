@@ -1,4 +1,10 @@
 #4.0.2 2015-??-??
+- 2015-10-06 Added Czech language, thanks to the translation team.
+- 2015-10-06 Added Hungarian language, thanks to the translation team.
+- 2015-10-06 Added Portuguese (Brazil) language, thanks to the translation team.
+- 2015-10-06 Added Russian language, thanks to the translation team.
+- 2015-10-06 Added Serbian language, thanks to the translation team.
+- 2015-10-06 Added Swahili language, thanks to the translation team.
 - 2015-04-29 Fixed POD for Kernel::System::MasterSlave::new()
 
 #4.0.1 2014-11-25
