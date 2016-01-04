@@ -58,19 +58,21 @@ sub Run {
         );
     }
     return $LayoutObject->ErrorScreen(
-        Message => "Undefined subaction.",
+        Message => $LayoutObject->{LanguageObject}->Translate('Undefined subaction.'),
     );
 }
 
 sub _Add {
     my ( $Self, %Param ) = @_;
 
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+
     my %GetParam;
     for my $Needed (qw(ObjectType FieldType FieldOrder)) {
         $GetParam{$Needed} = $Kernel::OM->Get('Kernel::System::Web::Request')->GetParam( Param => $Needed );
         if ( !$Needed ) {
-            return $Kernel::OM->Get('Kernel::Output::HTML::Layout')->ErrorScreen(
-                Message => "Need $Needed",
+            return $LayoutObject->ErrorScreen(
+                Message => $LayoutObject->{LanguageObject}->Translate('Need %s', $Needed),
             );
         }
     }
@@ -97,12 +99,13 @@ sub _AddAction {
     my %GetParam;
 
     my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     for my $Needed (qw(Name Label FieldOrder)) {
         $GetParam{$Needed} = $ParamObject->GetParam( Param => $Needed );
         if ( !$GetParam{$Needed} ) {
             $Errors{ $Needed . 'ServerError' }        = 'ServerError';
-            $Errors{ $Needed . 'ServerErrorMessage' } = 'This field is required.';
+            $Errors{ $Needed . 'ServerErrorMessage' } = $LayoutObject->{LanguageObject}->Translate('This field is required.');
         }
     }
 
@@ -116,7 +119,7 @@ sub _AddAction {
             # add server error error class
             $Errors{NameServerError} = 'ServerError';
             $Errors{NameServerErrorMessage} =
-                'The field does not contain only ASCII letters and numbers.';
+                $LayoutObject->{LanguageObject}->Translate('The field does not contain only ASCII letters and numbers.');
         }
 
         # check if name is duplicated
@@ -133,7 +136,7 @@ sub _AddAction {
 
             # add server error error class
             $Errors{NameServerError}        = 'ServerError';
-            $Errors{NameServerErrorMessage} = 'There is another field with the same name.';
+            $Errors{NameServerErrorMessage} = $LayoutObject->{LanguageObject}->Translate('There is another field with the same name.');
         }
     }
 
@@ -144,7 +147,7 @@ sub _AddAction {
 
             # add server error error class
             $Errors{FieldOrderServerError}        = 'ServerError';
-            $Errors{FieldOrderServerErrorMessage} = 'The field must be numeric.';
+            $Errors{FieldOrderServerErrorMessage} = $LayoutObject->{LanguageObject}->Translate('The field must be numeric.');
         }
     }
 
@@ -152,12 +155,10 @@ sub _AddAction {
         $GetParam{$ConfigParam} = $ParamObject->GetParam( Param => $ConfigParam );
     }
 
-    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-
     # uncorrectable errors
     if ( !$GetParam{ValidID} ) {
         return $LayoutObject->ErrorScreen(
-            Message => "Need ValidID",
+            Message => $LayoutObject->{LanguageObject}->Translate('Need ValidID'),
         );
     }
 
@@ -175,7 +176,7 @@ sub _AddAction {
     my $FieldConfig = {
         DefaultValue       => '',
         PossibleNone       => 1,
-        TranslatableValues => 1,
+        $LayoutObject->{LanguageObject}->TranslateValues => 1,
     };
 
     # create a new field
@@ -192,7 +193,7 @@ sub _AddAction {
 
     if ( !$FieldID ) {
         return $LayoutObject->ErrorScreen(
-            Message => "Could not create the new field",
+            Message => $LayoutObject->{LanguageObject}->Translate('Could not create the new field'),
         );
     }
 
@@ -212,7 +213,7 @@ sub _Change {
         $GetParam{$Needed} = $ParamObject->GetParam( Param => $Needed );
         if ( !$Needed ) {
             return $LayoutObject->ErrorScreen(
-                Message => "Need $Needed",
+                Message => $LayoutObject->{LanguageObject}->Translate('Need %s', $Needed),
             );
         }
     }
@@ -228,7 +229,7 @@ sub _Change {
 
     if ( !$FieldID ) {
         return $LayoutObject->ErrorScreen(
-            Message => "Need ID",
+            Message => $LayoutObject->{LanguageObject}->Translate('Need ID'),
         );
     }
 
@@ -240,7 +241,7 @@ sub _Change {
     # check for valid dynamic field configuration
     if ( !IsHashRefWithData($DynamicFieldData) ) {
         return $LayoutObject->ErrorScreen(
-            Message => "Could not get data for dynamic field $FieldID",
+            Message => $LayoutObject->{LanguageObject}->Translate('Could not get data for dynamic field %s', $FieldID),
         );
     }
 
@@ -261,21 +262,20 @@ sub _ChangeAction {
     my %GetParam;
 
     my $ParamObject = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     for my $Needed (qw(Name Label FieldOrder)) {
         $GetParam{$Needed} = $ParamObject->GetParam( Param => $Needed );
         if ( !$GetParam{$Needed} ) {
             $Errors{ $Needed . 'ServerError' }        = 'ServerError';
-            $Errors{ $Needed . 'ServerErrorMessage' } = 'This field is required.';
+            $Errors{ $Needed . 'ServerErrorMessage' } = $LayoutObject->{LanguageObject}->Translate('This field is required.');
         }
     }
-
-    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     my $FieldID = $ParamObject->GetParam( Param => 'ID' );
     if ( !$FieldID ) {
         return $LayoutObject->ErrorScreen(
-            Message => "Need ID",
+            Message => $LayoutObject->{LanguageObject}->Translate('Need ID'),
         );
     }
 
@@ -289,7 +289,7 @@ sub _ChangeAction {
     # check for valid dynamic field configuration
     if ( !IsHashRefWithData($DynamicFieldData) ) {
         return $LayoutObject->ErrorScreen(
-            Message => "Could not get data for dynamic field $FieldID",
+            Message => $LayoutObject->{LanguageObject}->Translate('Could not get data for dynamic field %s', $FieldID),
         );
     }
 
@@ -301,7 +301,7 @@ sub _ChangeAction {
             # add server error error class
             $Errors{NameServerError} = 'ServerError';
             $Errors{NameServerErrorMessage} =
-                'The field does not contain only ASCII letters and numbers.';
+                $LayoutObject->{LanguageObject}->Translate('The field does not contain only ASCII letters and numbers.');
         }
 
         # check if name is duplicated
@@ -322,7 +322,7 @@ sub _ChangeAction {
 
             # add server error class
             $Errors{NameServerError}        = 'ServerError';
-            $Errors{NameServerErrorMessage} = 'There is another field with the same name.';
+            $Errors{NameServerErrorMessage} = $LayoutObject->{LanguageObject}->Translate('There is another field with the same name.');
         }
 
         # if it's an internal field, it's name should not change
@@ -334,7 +334,7 @@ sub _ChangeAction {
 
             # add server error class
             $Errors{NameServerError}        = 'ServerError';
-            $Errors{NameServerErrorMessage} = 'The name for this field should not change.';
+            $Errors{NameServerErrorMessage} = $LayoutObject->{LanguageObject}->Translate('The name for this field should not change.');
             $Param{InternalField}           = $DynamicFieldData->{InternalField};
         }
     }
@@ -346,7 +346,7 @@ sub _ChangeAction {
 
             # add server error error class
             $Errors{FieldOrderServerError}        = 'ServerError';
-            $Errors{FieldOrderServerErrorMessage} = 'The field must be numeric.';
+            $Errors{FieldOrderServerErrorMessage} = $LayoutObject->{LanguageObject}->Translate('The field must be numeric.');
         }
     }
 
@@ -357,7 +357,7 @@ sub _ChangeAction {
     # uncorrectable errors
     if ( !$GetParam{ValidID} ) {
         return $LayoutObject->ErrorScreen(
-            Message => "Need ValidID",
+            Message => $LayoutObject->{LanguageObject}->Translate('Need ValidID'),
         );
     }
 
@@ -376,7 +376,7 @@ sub _ChangeAction {
     my $FieldConfig = {
         DefaultValue       => '',
         PossibleNone       => 1,
-        TranslatableValues => 1,
+        $LayoutObject->{LanguageObject}->TranslateValues => 1,
     };
 
     # update dynamic field (FieldType and ObjectType cannot be changed; use old values)
@@ -394,7 +394,7 @@ sub _ChangeAction {
 
     if ( !$UpdateSuccess ) {
         return $LayoutObject->ErrorScreen(
-            Message => "Could not update the field $GetParam{Name}",
+            Message => $LayoutObject->{LanguageObject}->Translate('Could not update the field %s', $GetParam{Name}),
         );
     }
 

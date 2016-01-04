@@ -80,8 +80,8 @@ sub Run {
     # check needed stuff
     if ( !$Self->{TicketID} ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'No TicketID is given!',
-            Comment => 'Please contact the admin.',
+            Message => $LayoutObject->{LanguageObject}->Translate('No TicketID is given!'),
+            Comment => $LayoutObject->{LanguageObject}->Translate('Please contact the admin.'),
         );
     }
 
@@ -98,7 +98,7 @@ sub Run {
     # error screen, don't show ticket
     if ( !$Access ) {
         return $LayoutObject->NoPermission(
-            Message    => "You need $Config->{Permission} permissions!",
+            Message    => $LayoutObject->{LanguageObject}->Translate('You need %s permissions!', $Config->{Permission}),
             WithHeader => 'yes',
         );
     }
@@ -199,8 +199,8 @@ sub Run {
                 );
                 $Output .= $LayoutObject->Warning(
                     Message => $LayoutObject->{LanguageObject}
-                        ->Get('Sorry, you need to be the ticket owner to perform this action.'),
-                    Comment => $LayoutObject->{LanguageObject}->Get('Please change the owner first.'),
+                        ->Translate('Sorry, you need to be the ticket owner to perform this action.'),
+                    Comment => $LayoutObject->{LanguageObject}->Translate('Please change the owner first.'),
                 );
                 $Output .= $LayoutObject->Footer(
                     Type => 'Small',
@@ -585,8 +585,8 @@ sub Run {
                 if ( !IsHashRefWithData($ValidationResult) ) {
                     return $LayoutObject->ErrorScreen(
                         Message =>
-                            "Could not perform validation on field $DynamicFieldConfig->{Label}!",
-                        Comment => 'Please contact the admin.',
+                            $LayoutObject->{LanguageObject}->Translate('Could not perform validation on field %s!', $DynamicFieldConfig->{Label}),
+                        Comment => $LayoutObject->{LanguageObject}->Translate('Please contact the admin.'),
                     );
                 }
 
@@ -1116,7 +1116,7 @@ sub Run {
                     Name        => 'DynamicField_' . $DynamicFieldConfig->{Name},
                     Data        => $DataValues,
                     SelectedID  => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
-                    Translation => $DynamicFieldConfig->{Config}->{TranslatableValues} || 0,
+                    Translation => $DynamicFieldConfig->{Config}->{$LayoutObject->{LanguageObject}->TranslateValues} || 0,
                     Max         => 100,
                 }
             );

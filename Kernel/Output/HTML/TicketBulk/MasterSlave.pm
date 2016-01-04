@@ -148,6 +148,7 @@ sub _GetMasterSlaveData {
 
     # get config object
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 
     # get master slave config
     my $UnsetMasterSlave  = $ConfigObject->Get('MasterSlave::UnsetMasterSlave')  || 0;
@@ -155,12 +156,12 @@ sub _GetMasterSlaveData {
 
     my %Data = (
         ''     => '-',
-        Master => 'New Master Ticket',
+        Master => $LayoutObject->{LanguageObject}->Translate('New Master Ticket'),
     );
 
     if ($UnsetMasterSlave) {
-        $Data{UnsetMaster} = 'Unset Master Tickets';
-        $Data{UnsetSlave}  = 'Unset Slave Tickets';
+        $Data{UnsetMaster} = $LayoutObject->{LanguageObject}->Translate('Unset Master Tickets');
+        $Data{UnsetSlave}  = $LayoutObject->{LanguageObject}->Translate('Unset Slave Tickets');
     }
 
     # get needed objects
