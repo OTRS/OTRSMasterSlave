@@ -156,7 +156,8 @@ sub EditFieldValueValidate {
     # perform necessary validations
     if ( $Param{Mandatory} && !$Value ) {
         return {
-            ServerError => 1,
+            ServerError  => $ServerError,
+            ErrorMessage => $ErrorMessage,
         };
     }
     else {
