@@ -176,7 +176,7 @@ sub _AddAction {
     my $FieldConfig = {
         DefaultValue       => '',
         PossibleNone       => 1,
-        $LayoutObject->{LanguageObject}->TranslateValues => 1,
+        TranslatableValues => 1,
     };
 
     # create a new field
@@ -376,7 +376,7 @@ sub _ChangeAction {
     my $FieldConfig = {
         DefaultValue       => '',
         PossibleNone       => 1,
-        $LayoutObject->{LanguageObject}->TranslateValues => 1,
+        TranslatableValues => 1,
     };
 
     # update dynamic field (FieldType and ObjectType cannot be changed; use old values)

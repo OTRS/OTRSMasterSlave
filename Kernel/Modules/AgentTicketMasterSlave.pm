@@ -1116,7 +1116,7 @@ sub Run {
                     Name        => 'DynamicField_' . $DynamicFieldConfig->{Name},
                     Data        => $DataValues,
                     SelectedID  => $DynamicFieldValues{ $DynamicFieldConfig->{Name} },
-                    Translation => $DynamicFieldConfig->{Config}->{$LayoutObject->{LanguageObject}->TranslateValues} || 0,
+                    Translation => $DynamicFieldConfig->{Config}->{TranslatableValues} || 0,
                     Max         => 100,
                 }
             );
