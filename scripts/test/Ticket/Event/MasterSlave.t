@@ -1,5 +1,5 @@
 # --
-# Copyright (C) 2001-2015 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -20,10 +20,14 @@ my $DynamicFieldObject      = $Kernel::OM->Get('Kernel::System::DynamicField');
 my $UserObject              = $Kernel::OM->Get('Kernel::System::User');
 my $CustomerUserObject      = $Kernel::OM->Get('Kernel::System::CustomerUser');
 my $ConfigObject            = $Kernel::OM->Get('Kernel::Config');
-my $HelperObject            = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-# starts a database transaction
-$HelperObject->BeginWork();
+# start RestoreDatabse
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreDatabase => 1,
+    },
+);
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # ------------------------------------------------------------ #
 # make preparations
@@ -206,7 +210,7 @@ my $ForwardArticleID = $TicketObject->ArticleSend(
 );
 $Self->True(
     $Success,
-    "ArticleSend() Fowarded MasterTicket Article ID $ForwardArticleID",
+    "ArticleSend() Forwarded MasterTicket Article ID $ForwardArticleID",
 );
 
 # get master ticket history
@@ -331,7 +335,7 @@ $Self->IsDeeply(
 # test event TicketPendingTimeUpdate
 # ------------------------------------------------------------ #
 
-# change pendint time for master ticket
+# change pending time for master ticket
 $Success = $TicketObject->TicketPendingTimeSet(
     Year     => 0000,
     Month    => 00,
@@ -534,7 +538,6 @@ $Self->IsDeeply(
     "SlaveTicket lock updated - ",
 );
 
-# rolls back the current database transaction.
-$HelperObject->Rollback();
+# cleanup is done by RestoreDatabase
 
 1;
