@@ -15,7 +15,6 @@ use vars (qw($Self));
 use Kernel::System::VariableCheck qw(:all);
 
 # get needed objects
-my $HelperObject              = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 my $DynamicFieldObject        = $Kernel::OM->Get('Kernel::System::DynamicField');
 my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 my $ParamObject               = $Kernel::OM->Get('Kernel::System::Web::Request');
@@ -27,6 +26,14 @@ $Kernel::OM->ObjectParamAdd(
 );
 my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
 my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+
+# get helper object
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreDatabase => 1,
+    },
+);
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # ------------------------------------------------------------ #
 # make preparations
@@ -233,5 +240,7 @@ for my $Test (@Tests) {
     );
 
 }
+
+# Cleanup is done by RestoreDatabase.
 
 1;

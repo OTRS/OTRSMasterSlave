@@ -19,10 +19,14 @@ my $LinkObject                = $Kernel::OM->Get('Kernel::System::LinkObject');
 my $DynamicFieldObject        = $Kernel::OM->Get('Kernel::System::DynamicField');
 my $DynamicFieldBackendObject = $Kernel::OM->Get('Kernel::System::DynamicField::Backend');
 my $ConfigObject              = $Kernel::OM->Get('Kernel::Config');
-my $HelperObject              = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
-# starts a database transaction
-$HelperObject->BeginWork();
+# get helper object
+$Kernel::OM->ObjectParamAdd(
+    'Kernel::System::UnitTest::Helper' => {
+        RestoreDatabase => 1,
+    },
+);
+my $HelperObject = $Kernel::OM->Get('Kernel::System::UnitTest::Helper');
 
 # ------------------------------------------------------------ #
 # make preparations
@@ -389,7 +393,6 @@ $Self->True(
     "LinkKeyList() Master/Slave link found - Ticket ID $TicketIDs[0], $TicketIDs[1] and $TicketIDs[2] - KeepParentChildAfterUpdate sysconfig enabled",
 );
 
-# rolls back the current database transaction.
-$HelperObject->Rollback();
+# Cleanup is done by RestoreDatabase.
 
 1;
