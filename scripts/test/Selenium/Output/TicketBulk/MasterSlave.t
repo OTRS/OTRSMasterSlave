@@ -95,16 +95,13 @@ $Selenium->RunTest(
         my $ScriptAlias = $Kernel::OM->Get('Kernel::Config')->Get('ScriptAlias');
 
         # navigate to AgentTicketSearch
-        $Selenium->get("${ScriptAlias}index.pl?Action=AgentTicketSearch");
-
-        # wait until form has loaded, if necessary
-        $Selenium->WaitFor( JavaScript => "return typeof(\$) === 'function' && \$('#SearchProfile').length" );
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketSearch");
 
         # search test created tickets by title
         $Selenium->execute_script("\$('#Attribute').val('Title').trigger('redraw.InputField').trigger('change');");
         $Selenium->find_element( ".AddButton", 'css' )->click();
         $Selenium->find_element( "Title",      'name' )->send_keys($TicketTitle);
-        $Selenium->find_element("//button[\@id='SearchFormSubmit'][\@value='Run search']")->click();
+        $Selenium->find_element("//button[\@id='SearchFormSubmit'][\@value='Run search']")->VerifiedClick();
 
         # select first test created ticket
         $Selenium->find_element("//input[\@value='$TicketIDs[0]']")->click();
@@ -112,9 +109,9 @@ $Selenium->RunTest(
         # click on bulk and switch screen
         $Selenium->find_element( "Bulk", 'link_text' )->click();
 
+        $Selenium->WaitFor( WindowCount => 2 );
         my $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
-        $Selenium->WaitFor( WindowCount => 2 );
 
         # wait until form has loaded, if necessary
         $Selenium->WaitFor(
@@ -137,9 +134,9 @@ $Selenium->RunTest(
         # click on bulk and switch screen
         $Selenium->find_element( "Bulk", 'link_text' )->click();
 
+         $Selenium->WaitFor( WindowCount => 2 );
         $Handles = $Selenium->get_window_handles();
         $Selenium->switch_to_window( $Handles->[1] );
-        $Selenium->WaitFor( WindowCount => 2 );
 
         # wait until form has loaded, if necessary
         $Selenium->WaitFor(
@@ -157,7 +154,7 @@ $Selenium->RunTest(
         $Selenium->WaitFor( WindowCount => 1 );
 
         # navigate to master ticket zoom view
-        $Selenium->get("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
+        $Selenium->VerifiedGet("${ScriptAlias}index.pl?Action=AgentTicketZoom;TicketID=$TicketIDs[0]");
 
         # verify master-slave ticket link
         $Self->True(
