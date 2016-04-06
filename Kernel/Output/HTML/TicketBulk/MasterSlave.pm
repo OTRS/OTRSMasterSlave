@@ -11,6 +11,8 @@ package Kernel::Output::HTML::TicketBulk::MasterSlave;
 use strict;
 use warnings;
 
+use Kernel::Language qw(Translatable);
+
 our @ObjectDependencies = (
     'Kernel::Config',
     'Kernel::Output::HTML::Layout',
@@ -160,8 +162,8 @@ sub _GetMasterSlaveData {
     );
 
     if ($UnsetMasterSlave) {
-        $Data{UnsetMaster} = $LayoutObject->{LanguageObject}->Translate('Unset Master Tickets');
-        $Data{UnsetSlave}  = $LayoutObject->{LanguageObject}->Translate('Unset Slave Tickets');
+        $Data{UnsetMaster} = Translatable('Unset Master Tickets');
+        $Data{UnsetSlave}  = Translatable('Unset Slave Tickets');
     }
 
     # get needed objects
