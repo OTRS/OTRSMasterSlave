@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/60c239c927c6d8cdc985f57af56c42de86cd413a/Kernel/Output/HTML/Standard/AgentTicketActionCommon.tt
+# $origin: https://github.com/OTRS/otrs/blob/ec0d79d1961308387ad27398528763b5db1142ca/Kernel/Output/HTML/Standard/AgentTicketActionCommon.tt
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,11 +11,10 @@
 # ---
 # MasterSlave
 # ---
-# this module uses AgentTicketActionCommon as a base, for easy update and framework compatibility
-# special markers has been set along the file to easy spot the differences introduced by
+    # this module uses AgentTicketActionCommon as a base, for easy update and framework compatibility
+    # special markers has been set along the file to easy spot the differences introduced by
 # OTRSMasterSlave package
 # ---
-
 [% RenderBlockStart("Properties") %]
 
 <form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data" name="compose" id="Compose" class="Validate PreventMultipleSubmits">
@@ -54,7 +53,6 @@
 #[% Translate("Change Responsible of Ticket") | html %]:
 #[% RenderBlockEnd("HeaderAgentTicketResponsible") %]
 #[% Data.TicketNumber %] - [% Data.Title | html %]
-                [% Translate("Manage Master/Slave") | html %] : [% Data.TicketNumber | html %] - [% Data.Title | truncate(60) | html %]
 # ---
             </h1>
             <p class="AsteriskExplanation">[% Translate("All fields marked with an asterisk (*) are mandatory.") | html %]</p>
@@ -112,6 +110,23 @@ $('#TypeID').bind('change', function (Event) {
 //]]></script>
 [% END %]
 [% RenderBlockEnd("Type") %]
+
+[% RenderBlockStart("Queue") %]
+                        <label for="NewQueueID">[% Translate("Queue") | html %]:</label>
+                        <div class="Field">
+                            [% Data.QueuesStrg %]
+                            <div id="NewQueueIDError" class="TooltipErrorMessage" ><p>[% Translate("This field is required.") | html %]</p></div>
+                            <div id="NewQueueIDServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
+                        </div>
+                        <div class="Clear"></div>
+[% WRAPPER JSOnDocumentComplete %]
+<script type="text/javascript">//<![CDATA[
+    $('#NewQueueID').bind('change', function (Event) {
+        Core.AJAX.FormUpdate($('#Compose'), 'AJAXUpdate', 'NewQueueID', [ 'TypeID', 'ServiceID', 'NewOwnerID', 'OldOwnerID', 'NewResponsibleID', 'NewStateID', 'NewPriorityID', 'StandardTemplateID' [% Data.DynamicFieldNamesStrg %] ]);
+    });
+//]]></script>
+[% END %]
+[% RenderBlockEnd("Queue") %]
 
 [% RenderBlockStart("Service") %]
                         <label for="ServiceID">[% Translate("Service") | html %]:</label>
@@ -178,23 +193,6 @@ $('#TypeID').bind('change', function (Event) {
 [% END %]
 [% RenderBlockEnd("SLAMandatory") %]
 
-[% RenderBlockStart("Queue") %]
-                        <label for="NewQueueID">[% Translate("Queue") | html %]:</label>
-                        <div class="Field">
-                            [% Data.QueuesStrg %]
-                            <div id="NewQueueIDError" class="TooltipErrorMessage" ><p>[% Translate("This field is required.") | html %]</p></div>
-                            <div id="NewQueueIDServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
-                        </div>
-                        <div class="Clear"></div>
-[% WRAPPER JSOnDocumentComplete %]
-<script type="text/javascript">//<![CDATA[
-    $('#NewQueueID').bind('change', function (Event) {
-        Core.AJAX.FormUpdate($('#Compose'), 'AJAXUpdate', 'NewQueueID', [ 'TypeID', 'ServiceID', 'NewOwnerID', 'OldOwnerID', 'NewResponsibleID', 'NewStateID', 'NewPriorityID', 'StandardTemplateID' [% Data.DynamicFieldNamesStrg %] ]);
-    });
-//]]></script>
-[% END %]
-[% RenderBlockEnd("Queue") %]
-
 [% RenderBlockStart("Owner") %]
                         <label for="NewOwnerID">[% Translate("New Owner") | html %]:</label>
                         <div class="Field">
@@ -260,6 +258,7 @@ $('#TypeID').bind('change', function (Event) {
                     [% Data.DateString %]
                             <div id="DayServerError" class="TooltipErrorMessage"><p>[% Translate("Date invalid!") | html %]</p></div>
                             <div id="HourServerError" class="TooltipErrorMessage"><p>[% Translate("Date invalid!") | html %]</p></div>
+                            <p class="FieldExplanation">[% Translate("For all pending* states.") | html %]</p>
                         </div>
                         <div class="Clear"></div>
 [% RenderBlockEnd("StatePending") %]
@@ -389,7 +388,9 @@ $('#TypeID').bind('change', function (Event) {
 [% WRAPPER JSOnDocumentComplete %]
 <script type="text/javascript">//<![CDATA[
     $('#StandardTemplateID').bind('change', function (Event) {
-        Core.AJAX.FormUpdate($('#Compose'), 'AJAXUpdate', 'StandardTemplateID', ['RichTextField']);
+        Core.Agent.TicketAction.ConfirmTemplateOverwrite('RichText', $(this), function () {
+            Core.AJAX.FormUpdate($('#Compose'), 'AJAXUpdate', 'StandardTemplateID', ['RichTextField']);
+        });
         return false;
     });
 //]]></script>
@@ -472,7 +473,6 @@ $('#TypeID').bind('change', function (Event) {
                             </div>
                             <div class="Clear"></div>
 [% RenderBlockEnd("TimeUnits") %]
-
 # ---
 # MasterSlave
 # ---
@@ -484,7 +484,6 @@ $('#TypeID').bind('change', function (Event) {
                             <div class="Clear"></div>
 [% RenderBlockEnd("MasterSlave") %]
 # ---
-
                         </fieldset>
 [% RenderBlockStart("InformAdditionalAgents") %]
                         <fieldset class="TableLike FixedLabel">
@@ -509,6 +508,18 @@ $('#TypeID').bind('change', function (Event) {
                             </div>
                         </fieldset>
 [% RenderBlockEnd("InformAdditionalAgents") %]
+[% RenderBlockStart("InformAgentsWithoutSelection") %]
+                        <fieldset class="TableLike FixedLabel">
+                            <label>[% Translate("Note will be (also) received by:") | html %]:</label>
+                            <p class="Value">
+                                <input type="hidden" name="UserListWithoutSelection" value="[% Data.UserListWithoutSelection  | html %]" />
+[% RenderBlockStart("InformAgentsWithoutSelectionSingleUser") %]
+                                <span title="[% Data.UserEmail %]">[% Data.UserFullname %]</span>[% RenderBlockStart("InformAgentsWithoutSelectionSingleUserSeparator") %],[% RenderBlockEnd("InformAgentsWithoutSelectionSingleUserSeparator") %]
+[% RenderBlockEnd("InformAgentsWithoutSelectionSingleUser") %]
+                            </p>
+                            <div class="Clear"></div>
+                        </fieldset>
+[% RenderBlockEnd("InformAgentsWithoutSelection") %]
                     </div>
                 </div>
 [% RenderBlockEnd("WidgetArticle") %]

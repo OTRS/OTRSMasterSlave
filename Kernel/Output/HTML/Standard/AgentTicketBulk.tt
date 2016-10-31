@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2016 OTRS AG, http://otrs.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/fa66f734e9fe486c36bb2a1f6a09947fcc0d3d4c/Kernel/Output/HTML/Standard/AgentTicketBulk.tt
+# $origin: https://github.com/OTRS/otrs/blob/ec0d79d1961308387ad27398528763b5db1142ca/Kernel/Output/HTML/Standard/AgentTicketBulk.tt
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -126,9 +126,7 @@
 
                             <label class="Mandatory" for="EmailBody"><span class="Marker">*</span> [% Translate("Text") | html %]:</label>
                             <div class="RichTextField">
-[% RenderBlockStart("RichTextEmail") %]
-[% InsertTemplate("RichTextEditor.tt") %]
-[% RenderBlockEnd("RichTextEmail") %]
+# RichTextEditor has already been included previously (if enabled)
                                 <textarea id="EmailBody" class="RichText Validate_DependingRequiredAND Validate_Depending_EmailSubject [% Data.BodyInvalid %]" name="EmailBody" rows="15" cols="[% Config("Ticket::Frontend::TextAreaNote") %]">[% Data.EmailBody | html %]</textarea>
                                 <div id="EmailBodyError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
                                 <div id="EmailBodyServerError" class="TooltipErrorMessage"><p>[% Translate("This field is required.") | html %]</p></div>
@@ -165,6 +163,7 @@
                         [% Data.DateString %]
                         <div id="DayServerError" class="TooltipErrorMessage"><p>[% Translate("Date invalid!") | html %]</p></div>
                         <div id="HourServerError" class="TooltipErrorMessage"><p>[% Translate("Date invalid!") | html %]</p></div>
+                        <p class="FieldExplanation">[% Translate("For all pending* states.") | html %]</p>
                     </div>
                     <div class="Clear"></div>
 [% RenderBlockEnd("StatePending") %]
