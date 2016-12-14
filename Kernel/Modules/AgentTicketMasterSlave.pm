@@ -9,7 +9,7 @@
 # --
 
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
 #package Kernel::Modules::AgentTicketActionCommon;
     # this module uses AgentTicketActionCommon as a base, for easy update and framework compatibility
@@ -31,7 +31,7 @@ use Kernel::System::StdAttachment;
 use Kernel::System::TemplateGenerator;
 use Kernel::System::VariableCheck qw(:all);
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
 use Kernel::System::MasterSlave;
 use Kernel::Language;
@@ -130,7 +130,7 @@ sub new {
     }
 
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField = $Self->{ConfigObject}->Get('MasterSlave::DynamicField');
@@ -147,7 +147,7 @@ sub new {
     );
 
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     $Self->{MasterSlaveObject} = Kernel::System::MasterSlave->new(%Param);
 
@@ -316,7 +316,7 @@ sub Run {
         ResponsibleID => $GetParam{NewResponsibleID},
     );
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField               = $Self->{ConfigObject}->Get('MasterSlave::DynamicField') || '';
@@ -558,7 +558,7 @@ sub Run {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
             next DYNAMICFIELD
             if $DynamicFieldConfig->{Name} eq $Self->{ConfigObject}->Get('MasterSlave::DynamicField');
@@ -997,7 +997,7 @@ sub Run {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
             if (
                 $MasterSlaveAdvancedEnabled
@@ -2367,7 +2367,7 @@ sub _Mask {
         }
     }
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField   = $Self->{ConfigObject}->Get('MasterSlave::DynamicField') || '';

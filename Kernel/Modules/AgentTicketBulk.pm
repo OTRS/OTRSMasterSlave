@@ -20,7 +20,7 @@ use Kernel::System::Web::UploadCache;
 use Kernel::System::CustomerUser;
 use Kernel::System::TemplateGenerator;
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
 use Kernel::System::MasterSlave;
 # ---
@@ -67,7 +67,7 @@ sub new {
         $Self->{EmailFormID} = $Self->{UploadCacheObject}->FormIDCreate();
     }
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     $Self->{MasterSlaveObject} = Kernel::System::MasterSlave->new(%Param);
 # ---
@@ -333,7 +333,7 @@ sub Run {
     my $Counter       = 1;
     $Param{TicketsWereLocked} = 0;
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField               = $Self->{ConfigObject}->Get('MasterSlave::DynamicField') || '';
@@ -772,7 +772,7 @@ sub Run {
                 );
             }
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
             if ( $MasterSlaveAdvancedEnabled && $MasterSlaveDynamicField ) {
                 if ( $GetParam{$MasterSlaveDynamicField} ) {
@@ -1110,7 +1110,7 @@ sub _Mask {
         );
     }
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField   = $Self->{ConfigObject}->Get('MasterSlave::DynamicField') || '';

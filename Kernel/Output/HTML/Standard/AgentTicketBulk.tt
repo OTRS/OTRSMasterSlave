@@ -241,7 +241,7 @@
                     </div>
                     <div class="Clear"></div>
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
 [% RenderBlockStart("MasterSlave") %]
                     <label for="[% Data.MasterSlaveTicketFreeTextCount %]">[% Translate("MasterTicket") | html %]:</label>
