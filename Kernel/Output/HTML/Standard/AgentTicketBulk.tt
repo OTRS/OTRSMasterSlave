@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: otrs - ec0d79d1961308387ad27398528763b5db1142ca - Kernel/Output/HTML/Standard/AgentTicketBulk.tt
+# $origin: otrs - 1c2cb49026384b64beeb6c519d04189404eaf5c9 - Kernel/Output/HTML/Standard/AgentTicketBulk.tt
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -177,6 +177,19 @@
                     <div class="Clear"></div>
 [% RenderBlockEnd("Type") %]
 
+                    <label for="QueueID">[% Translate("Queue") | html %]:</label>
+                    <div class="Field">
+                        [% Data.MoveQueuesStrg %]
+                    </div>
+                    <div class="Clear"></div>
+[% WRAPPER JSOnDocumentComplete %]
+<script type="text/javascript">//<![CDATA[
+$('#QueueID').on('change', function () {
+    Core.AJAX.FormUpdate($('.Validate'), 'AJAXUpdate', 'QueueID', ['OwnerID', 'ResponsibleID']);
+});
+//]]></script>
+[% END %]
+
 [% RenderBlockStart("Owner") %]
                     <label for="OwnerID">[% Translate("Owner") | html %]:</label>
                     <div class="Field">
@@ -192,12 +205,6 @@
                     </div>
                     <div class="Clear"></div>
 [% RenderBlockEnd("Responsible") %]
-
-                    <label for="QueueID">[% Translate("Queue") | html %]:</label>
-                    <div class="Field">
-                        [% Data.MoveQueuesStrg %]
-                    </div>
-                    <div class="Clear"></div>
 
 [% RenderBlockStart("Priority") %]
                     <label for="PriorityID">[% Translate("Priority") | html %]:</label>
