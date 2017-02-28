@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: otrs - dcb4bca6b4f9d5de2ece16c2022c994effb9e589 - Kernel/Modules/AgentTicketBulk.pm
+# $origin: otrs - d7513ff879445974fdf2f119bcc2a4b9cf2e7564 - Kernel/Modules/AgentTicketBulk.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -416,6 +416,9 @@ sub Run {
     $GetParam{$MasterSlaveDynamicField}       = $Self->{ParamObject}->GetParam( Param => $MasterSlaveDynamicField ) || '';
 # ---
 
+    my @TicketsWithError;
+    my @TicketsWithLockNotice;
+
     TICKET_ID:
     for my $TicketID (@TicketIDs) {
         my %Ticket = $Self->{TicketObject}->TicketGet(
@@ -432,29 +435,14 @@ sub Run {
         if ( !$Access ) {
 
             # error screen, don't show ticket
-            $Output .= $Self->{LayoutObject}->Notify(
-                Data => "$Ticket{TicketNumber}: "
-                    . $Self->{LayoutObject}->{LanguageObject}->Translate("You don't have write access to this ticket."),
-            );
+            push @TicketsWithError, $Ticket{TicketNumber};
             next TICKET_ID;
         }
 
         # check if it's already locked by somebody else
-        if ( !$Self->{Config}->{RequiredLock} ) {
-            $Output .= $Self->{LayoutObject}->Notify(
-                Data => "$Ticket{TicketNumber}: "
-                    . $Self->{LayoutObject}->{LanguageObject}->Translate("Ticket selected."),
-            );
-        }
-        else {
+        if ( $Self->{Config}->{RequiredLock} ) {
             if ( grep ( { $_ eq $TicketID } @IgnoreLockedTicketIDs ) ) {
-                $Output .= $Self->{LayoutObject}->Notify(
-                    Priority => 'Error',
-                    Data     => "$Ticket{TicketNumber}: "
-                        . $Self->{LayoutObject}->{LanguageObject}->Translate(
-                        "Ticket is locked by another agent and will be ignored!"
-                        ),
-                );
+                push @TicketsWithError, $Ticket{TicketNumber};
                 next TICKET_ID;
             }
             else {
@@ -475,10 +463,8 @@ sub Run {
                 UserID    => $Self->{UserID},
                 NewUserID => $Self->{UserID},
             );
-            $Output .= $Self->{LayoutObject}->Notify(
-                Data => "$Ticket{TicketNumber}: "
-                    . $Self->{LayoutObject}->{LanguageObject}->Translate("Ticket locked."),
-            );
+
+            push @TicketsWithLockNotice, $Ticket{TicketNumber};
         }
 
         # remember selected ticket ids
@@ -863,6 +849,32 @@ sub Run {
             $ActionFlag = 1;
         }
         $Counter++;
+    }
+
+    # notify user about actions (errors)
+    if (@TicketsWithError) {
+        my $NotificationError = $Self->{LayoutObject}->{LanguageObject}->Translate(
+            "The following tickets were ignored because they are locked by another agent or you don't have write access to these tickets: %s.",
+            join( ", ", @TicketsWithError ),
+        );
+
+        $Output .= $Self->{LayoutObject}->Notify(
+            Priority => 'Error',
+            Data     => $NotificationError,
+        );
+    }
+
+    # notify user about actions (notices)
+    if (@TicketsWithLockNotice) {
+        my $NotificationNotice = $Self->{LayoutObject}->{LanguageObject}->Translate(
+            "The following tickets were locked: %s.",
+            join( ", ", @TicketsWithLockNotice ),
+        );
+
+        $Output .= $Self->{LayoutObject}->Notify(
+            Priority => 'Notice',
+            Data     => $NotificationNotice,
+        );
     }
 
     # redirect

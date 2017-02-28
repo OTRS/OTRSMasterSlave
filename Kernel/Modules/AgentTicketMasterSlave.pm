@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: otrs - dcb4bca6b4f9d5de2ece16c2022c994effb9e589 - Kernel/Modules/AgentTicketActionCommon.pm
+# $origin: otrs - 2018700bd4c3907f4306401daaebee69c5f23b40 - Kernel/Modules/AgentTicketActionCommon.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -128,7 +128,6 @@ sub new {
     if ( $Self->{Config}->{Note} ) {
         $ObjectType = [ 'Ticket', 'Article' ];
     }
-
 # ---
 # OTRSMasterSlave
 # ---
@@ -139,13 +138,13 @@ sub new {
         $Self->{Config}->{DynamicField}->{$MasterSlaveDynamicField} = 1;
     }
 # ---
+
     # get the dynamic fields for this screen
     $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
         Valid       => 1,
         ObjectType  => $ObjectType,
         FieldFilter => $Self->{Config}->{DynamicField} || {},
     );
-
 # ---
 # OTRSMasterSlave
 # ---
@@ -154,6 +153,7 @@ sub new {
     $Self->{UserLanguage} = $Self->{LayoutObject}->{UserLanguage} || $Self->{ConfigObject}->Get('DefaultLanguage');
     $Self->{LanguageObject} = Kernel::Language->new(%Param, UserLanguage => $Self->{UserLanguage});
 # ---
+
     return $Self;
 }
 
@@ -556,13 +556,13 @@ sub Run {
         DYNAMICFIELD:
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-
 # ---
 # OTRSMasterSlave
 # ---
             next DYNAMICFIELD
             if $DynamicFieldConfig->{Name} eq $Self->{ConfigObject}->Get('MasterSlave::DynamicField');
 # ---
+
             my $PossibleValuesFilter;
 
             my $IsACLReducible = $Self->{BackendObject}->HasBehavior(
@@ -995,7 +995,6 @@ sub Run {
         DYNAMICFIELD:
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-
 # ---
 # OTRSMasterSlave
 # ---
@@ -1018,6 +1017,7 @@ sub Run {
                 next DYNAMICFIELD;
             }
 # ---
+
             # set the object ID (TicketID or ArticleID) depending on the field configration
             my $ObjectID = $DynamicFieldConfig->{ObjectType} eq 'Article' ? $ArticleID : $Self->{TicketID};
 
@@ -2625,6 +2625,7 @@ sub _GetSLAs {
         %SLA = $Self->{TicketObject}->TicketSLAList(
             %Param,
             Action => $Self->{Action},
+            UserID => $Self->{UserID},
         );
     }
     return \%SLA;
