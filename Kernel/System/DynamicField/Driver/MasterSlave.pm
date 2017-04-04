@@ -62,7 +62,7 @@ sub new {
         'IsSortable'                   => 1,
         'IsFiltrable'                  => 1,
         'IsStatsCondition'             => 1,
-        'IsCustomerInterfaceCapable'   => 0,
+        'IsCustomerInterfaceCapable'   => 1,
     };
 
     # get the Dynamic Field Backend custom extensions
