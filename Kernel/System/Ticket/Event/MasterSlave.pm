@@ -175,6 +175,11 @@ sub Run {
         my $ForwardSlaves = $ConfigObject->Get('MasterSlave::ForwardSlaves');
         return 1 if $IsForward && !$ForwardSlaves;
 
+        # do not send internal communications to end customers of slave tickets
+        if ( $Article{SenderType} eq 'agent' && $Article{ArticleType} =~ m{internal} ) {
+            return 1;
+        }
+
         # mark ticket to prevent a loop
         $TicketObject->HistoryAdd(
             TicketID     => $Param{Data}->{TicketID},

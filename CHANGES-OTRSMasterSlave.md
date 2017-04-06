@@ -1,4 +1,5 @@
 #4.0.2 2017-??-??
+ - 2017-04-06 Fixed bug#[12092](https://bugs.otrs.org/show_bug.cgi?id=12092) - internal mail is sent to customer.
  - 2017-04-04 Fixed bug#[12095](https://bugs.otrs.org/show_bug.cgi?id=12095) - some event modules not working.
  - 2015-10-06 Added Czech language, thanks to the translation team.
  - 2015-10-06 Added Hungarian language, thanks to the translation team.
