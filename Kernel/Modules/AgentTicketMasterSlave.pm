@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: otrs - eb6bc9fda6c1eabadcc94e223a2a7f62debb8fc2 - Kernel/Modules/AgentTicketActionCommon.pm
+# $origin: otrs - 12376bdde1e75bc6e53700d971810c0897bc686e - Kernel/Modules/AgentTicketActionCommon.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -348,7 +348,6 @@ sub Run {
     for my $DynamicField ( sort keys %DynamicFieldValues ) {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !defined $DynamicFieldValues{$DynamicField};
-        next DYNAMICFIELD if !length $DynamicFieldValues{$DynamicField};
 
         $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
@@ -812,9 +811,10 @@ sub Run {
         # set state
         if ( $Self->{Config}->{State} && $GetParam{NewStateID} ) {
             $Self->{TicketObject}->TicketStateSet(
-                TicketID => $Self->{TicketID},
-                StateID  => $GetParam{NewStateID},
-                UserID   => $Self->{UserID},
+                TicketID     => $Self->{TicketID},
+                StateID      => $GetParam{NewStateID},
+                UserID       => $Self->{UserID},
+                DynamicField => $GetParam{DynamicField},
             );
 
             # unlock the ticket after close
@@ -1058,17 +1058,6 @@ sub Run {
         my $QueueID = $GetParam{NewQueueID} || $Ticket{QueueID};
         my $StateID = $GetParam{NewStateID} || $Ticket{StateID};
 
-        # convert dynamic field values into a structure for ACLs
-        my %DynamicFieldACLParameters;
-        DYNAMICFIELD:
-        for my $DynamicField ( sort keys %DynamicFieldValues ) {
-            next DYNAMICFIELD if !$DynamicField;
-            next DYNAMICFIELD if !defined $DynamicFieldValues{$DynamicField};
-            next DYNAMICFIELD if !length $DynamicFieldValues{$DynamicField};
-
-            $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
-        }
-
         # get list type
         my $TreeView = 0;
         if ( $Self->{ConfigObject}->Get('Ticket::Frontend::ListType') eq 'tree' ) {
@@ -1107,6 +1096,9 @@ sub Run {
             CustomerUserID => $CustomerUser,
             QueueID        => $QueueID,
             StateID        => $StateID,
+        );
+        my $NewQueues = $Self->_GetQueues(
+            %GetParam,
         );
 
         # reset previous ServiceID to reset SLA-List if no service is selected
@@ -1358,6 +1350,14 @@ sub Run {
                     Name         => 'TypeID',
                     Data         => $Types,
                     SelectedID   => $GetParam{TypeID},
+                    PossibleNone => 1,
+                    Translation  => 0,
+                    Max          => 100,
+                },
+                {
+                    Name         => 'NewQueueID',
+                    Data         => $NewQueues,
+                    SelectedID   => $GetParam{NewQueueID},
                     PossibleNone => 1,
                     Translation  => 0,
                     Max          => 100,
@@ -2828,6 +2828,20 @@ sub _GetTypes {
         );
     }
     return \%Type;
+}
+
+sub _GetQueues {
+    my ( $Self, %Param ) = @_;
+
+    # Get Queues.
+    my %Queues = $Self->{TicketObject}->TicketMoveList(
+        %Param,
+        TicketID => $Self->{TicketID},
+        UserID   => $Self->{UserID},
+        Action   => $Self->{Action},
+        Type     => 'move_into',
+    );
+    return \%Queues;
 }
 
 1;
