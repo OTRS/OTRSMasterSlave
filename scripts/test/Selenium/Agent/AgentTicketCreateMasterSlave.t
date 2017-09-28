@@ -88,7 +88,7 @@ $Selenium->RunTest(
         $Selenium->execute_script(
             "\$('#DynamicField_MasterSlave').val('Master').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element( "#Subject", 'css' )->VerifiedSubmit();
+        $Selenium->find_element( "#submitRichText", 'css' )->VerifiedClick();
 
         # get ticket object
         my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
@@ -101,15 +101,13 @@ $Selenium->RunTest(
             UserID            => 1,
         );
 
-        $Self->IsNot(
+        $Self->True(
             $MasterTicketID,
-            undef,
-            "Master TicketID should not be undef",
+            "Master TicketID - $MasterTicketID",
         );
-        $Self->IsNot(
+        $Self->True(
             $MasterTicketNumber,
-            undef,
-            "Master TicketNumber should not be undef",
+            "Master TicketNumber - $MasterTicketNumber",
         );
 
         # add new test customer for testing
@@ -130,7 +128,7 @@ $Selenium->RunTest(
         $Selenium->execute_script(
             "\$('#DynamicField_MasterSlave').val('SlaveOf:$MasterTicketNumber').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element( "#Subject", 'css' )->VerifiedSubmit();
+        $Selenium->find_element( "#submitRichText", 'css' )->VerifiedClick();
 
         # get slave test email ticket data
         my ( $SlaveTicketID, $SlaveTicketNumber ) = $TicketObject->TicketSearch(
@@ -140,15 +138,13 @@ $Selenium->RunTest(
             UserID            => 1,
         );
 
-        $Self->IsNot(
+        $Self->True(
             $SlaveTicketID,
-            undef,
-            "Slave TicketID should not be undef",
+            "Slave TicketID - $SlaveTicketID",
         );
-        $Self->IsNot(
+        $Self->True(
             $SlaveTicketNumber,
-            undef,
-            "Slave TicketNumber should not be undef",
+            "Slave TicketNumber - $SlaveTicketNumber",
         );
 
         # navigate to ticket zoom page of created master test ticket
