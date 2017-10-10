@@ -1,4 +1,6 @@
-#5.0.11 2017-??-??
+#5.0.12 2017-??-??
+
+#5.0.11 2017-10-17
  - 2017-09-25 Updated translations, thanks to all translators.
  - 2017-09-12 Updated framework files to OTRS 5.0.23.
 
