@@ -1,4 +1,10 @@
-#5.0.10 2017-??-??
+#5.0.11 2017-??-??
+ - 2017-09-25 Updated translations, thanks to all translators.
+ - 2017-09-12 Updated framework files to OTRS 5.0.23.
+
+#5.0.10 2017-07-17
+ - 2017-07-17 Updated framework files to OTRS 5.0.21.
+ - 2017-06-15 Follow-up for bug#[12634](https://bugs.otrs.org/show_bug.cgi?id=12634) - Hardcoded TicketHook and TicketHookDivider.
 
 #5.0.9 2017-05-09
  - 2017-05-02 Updated translations, thanks to all translators.
