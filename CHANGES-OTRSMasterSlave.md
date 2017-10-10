@@ -1,6 +1,21 @@
-#4.0.2 2017-??-??
+#4.0.7 2017-10-17
+ - 2017-09-12 Updated framework files to OTRS 4.0.25.
  - 2017-04-06 Fixed bug#[12092](https://bugs.otrs.org/show_bug.cgi?id=12092) - internal mail is sent to customer.
  - 2017-04-04 Fixed bug#[12095](https://bugs.otrs.org/show_bug.cgi?id=12095) - some event modules not working.
+
+#4.0.6 2017-03-30
+ - 2017-03-30 Build for OTRS 4 patch level 23.
+
+#4.0.5 2017-02-28
+ - 2017-02-28 Build for OTRS 4 patch level 22.
+
+#4.0.4 2017-01-18
+ - 2017-01-18 Build for OTRS 4 patch level 21.
+
+#4.0.3 2016-11-01
+ - Build for OTRS 4 patch level 19.
+
+#4.0.2 2015-09-01
  - 2015-10-06 Added Czech language, thanks to the translation team.
  - 2015-10-06 Added Hungarian language, thanks to the translation team.
  - 2015-10-06 Added Portuguese (Brazil) language, thanks to the translation team.
