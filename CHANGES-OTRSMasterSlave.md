@@ -1,3 +1,5 @@
+#4.0.8 20??-??-1??
+
 #4.0.7 2017-10-17
  - 2017-09-12 Updated framework files to OTRS 4.0.25.
  - 2017-04-06 Fixed bug#[12092](https://bugs.otrs.org/show_bug.cgi?id=12092) - internal mail is sent to customer.
