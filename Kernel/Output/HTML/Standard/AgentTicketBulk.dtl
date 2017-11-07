@@ -1,8 +1,7 @@
 # --
-# AgentTicketBulk.dtl - provides HTML form for bulk mask
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/165ec2e29e8ea67f4baee612c5fe3150cd66ca70/Kernel/Output/HTML/Standard/AgentTicketBulk.dtl
+# $origin: otrs - b3bb5c9425ff08073b49b3af167d4b88e29612f0 - Kernel/Output/HTML/Standard/AgentTicketBulk.dtl
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -42,7 +41,7 @@
                 <div class="WidgetSimple SpacingTop Collapsed">
                     <div class="Header">
                         <div class="WidgetAction Toggle">
-                            <a href="#" title="$Text{"Toggle this widget"}"></a>
+                            <a href="#" title="$Text{"Toggle this widget"}"><i class="icon-caret-right"></i><i class="icon-caret-down"></i></a>
                         </div>
                         <h2>$Text{"Add Note"}</h2>
                     </div>
@@ -166,6 +165,7 @@ $Include{"RichTextEditor"}
                         $Data{"DateString"}
                         <div id="DayServerError" class="TooltipErrorMessage"><p>$Text{"Date invalid!"}</p></div>
                         <div id="HourServerError" class="TooltipErrorMessage"><p>$Text{"Date invalid!"}</p></div>
+                        <p class="FieldExplanation">$Text{"For all pending* states."}</p>
                     </div>
                     <div class="Clear"></div>
 <!-- dtl:block:StatePending -->
@@ -243,7 +243,7 @@ $Include{"RichTextEditor"}
                     </div>
                     <div class="Clear"></div>
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
 <!-- dtl:block:MasterSlave -->
                     <label for="$Data{"MasterSlaveTicketFreeTextCount"}">$Text{"MasterTicket"}:</label>

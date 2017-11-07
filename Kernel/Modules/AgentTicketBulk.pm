@@ -1,8 +1,7 @@
 # --
-# Kernel/Modules/AgentTicketBulk.pm - to do bulk actions on tickets
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/fa2159290ffa2f0b94b2d8333a6875c00f9d8d32/Kernel/Modules/AgentTicketBulk.pm
+# $origin: otrs - b3bb5c9425ff08073b49b3af167d4b88e29612f0 - Kernel/Modules/AgentTicketBulk.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -21,7 +20,7 @@ use Kernel::System::Web::UploadCache;
 use Kernel::System::CustomerUser;
 use Kernel::System::TemplateGenerator;
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
 use Kernel::System::MasterSlave;
 # ---
@@ -68,7 +67,7 @@ sub new {
         $Self->{EmailFormID} = $Self->{UploadCacheObject}->FormIDCreate();
     }
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     $Self->{MasterSlaveObject} = Kernel::System::MasterSlave->new(%Param);
 # ---
@@ -81,8 +80,7 @@ sub Run {
 
     if ( $Self->{Subaction} eq 'CancelAndUnlockTickets' ) {
 
-        my @TicketIDs
-            = grep {$_}
+        my @TicketIDs = grep {$_}
             $Self->{ParamObject}->GetArray( Param => 'LockedTicketID' );
 
         # challenge token check for write action
@@ -124,8 +122,9 @@ sub Run {
         }
 
         if ( $Message ne '' ) {
-            return $Self->{LayoutObject}
-                ->ErrorScreen( Message => "Ticket ($Message) is not unlocked!", );
+            return $Self->{LayoutObject}->ErrorScreen(
+                Message => "Ticket ($Message) is not unlocked!",
+            );
         }
 
         return $Self->{LayoutObject}->Redirect(
@@ -142,8 +141,7 @@ sub Run {
     }
 
     # get involved tickets, filtering empty TicketIDs
-    my @TicketIDs
-        = grep {$_}
+    my @TicketIDs = grep {$_}
         $Self->{ParamObject}->GetArray( Param => 'TicketID' );
 
     # check needed stuff
@@ -298,9 +296,8 @@ sub Run {
     my $ActionFlag    = 0;
     my $Counter       = 1;
     $Param{TicketsWereLocked} = 0;
-
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField               = $Self->{ConfigObject}->Get('MasterSlave::DynamicField') || '';
@@ -500,12 +497,11 @@ sub Run {
                 );
 
                 # generate subject
-                my $TicketNumber
-                    = $Self->{TicketObject}->TicketNumberLookup( TicketID => $TicketID );
+                my $TicketNumber = $Self->{TicketObject}->TicketNumberLookup( TicketID => $TicketID );
 
                 my $EmailSubject = $Self->{TicketObject}->TicketSubjectBuild(
                     TicketNumber => $TicketNumber,
-                    Subject => $GetParam{EmailSubject} || '',
+                    Subject      => $GetParam{EmailSubject} || '',
                 );
 
                 $EmailArticleID = $Self->{TicketObject}->ArticleSend(
@@ -542,16 +538,16 @@ sub Run {
                     );
                 }
                 $ArticleID = $Self->{TicketObject}->ArticleCreate(
-                    TicketID      => $TicketID,
-                    ArticleTypeID => $GetParam{'ArticleTypeID'},
-                    ArticleType   => $GetParam{'ArticleType'},
-                    SenderType    => 'agent',
-                    From     => "$Self->{UserFirstname} $Self->{UserLastname} <$Self->{UserEmail}>",
-                    Subject  => $GetParam{'Subject'},
-                    Body     => $GetParam{'Body'},
-                    MimeType => $MimeType,
-                    Charset  => $Self->{LayoutObject}->{UserCharset},
-                    UserID   => $Self->{UserID},
+                    TicketID       => $TicketID,
+                    ArticleTypeID  => $GetParam{'ArticleTypeID'},
+                    ArticleType    => $GetParam{'ArticleType'},
+                    SenderType     => 'agent',
+                    From           => "$Self->{UserFirstname} $Self->{UserLastname} <$Self->{UserEmail}>",
+                    Subject        => $GetParam{'Subject'},
+                    Body           => $GetParam{'Body'},
+                    MimeType       => $MimeType,
+                    Charset        => $Self->{LayoutObject}->{UserCharset},
+                    UserID         => $Self->{UserID},
                     HistoryType    => 'AddNote',
                     HistoryComment => '%%Bulk',
                 );
@@ -595,7 +591,7 @@ sub Run {
             }
 
             # time units for note
-            if ( $GetParam{'TimeUnits'} && $ArticleID ) {
+            if ( $GetParam{TimeUnits} && $ArticleID ) {
                 if ( $Self->{ConfigObject}->Get('Ticket::Frontend::BulkAccountedTime') ) {
                     $Self->{TicketObject}->TicketAccountTime(
                         TicketID  => $TicketID,
@@ -619,7 +615,7 @@ sub Run {
             }
 
             # time units for email
-            if ( $GetParam{ 'EmailTimeUnits' && $EmailArticleID } ) {
+            if ( $GetParam{EmailTimeUnits} && $EmailArticleID ) {
                 if ( $Self->{ConfigObject}->Get('Ticket::Frontend::BulkAccountedTime') ) {
                     $Self->{TicketObject}->TicketAccountTime(
                         TicketID  => $TicketID,
@@ -734,7 +730,7 @@ sub Run {
                 );
             }
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
             if ( $MasterSlaveAdvancedEnabled && $MasterSlaveDynamicField ) {
                 if ( $GetParam{$MasterSlaveDynamicField} ) {
@@ -782,8 +778,7 @@ sub _Mask {
     # prepare errors!
     if ( $Param{Errors} ) {
         for my $KeyError ( sort keys %{ $Param{Errors} } ) {
-            $Param{$KeyError}
-                = $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
+            $Param{$KeyError} = $Self->{LayoutObject}->Ascii2Html( Text => $Param{Errors}->{$KeyError} );
         }
     }
 
@@ -866,10 +861,10 @@ sub _Mask {
             next STATE_ID if $StateData{TypeName} !~ /pending/i;
             $Param{DateString} = $Self->{LayoutObject}->BuildDateSelection(
                 %Param,
-                Format   => 'DateInputFormatLong',
-                DiffTime => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
-                Class    => $Param{Errors}->{DateInvalid} || '',
-                Validate => 1,
+                Format               => 'DateInputFormatLong',
+                DiffTime             => $Self->{ConfigObject}->Get('Ticket::Frontend::PendingDiffTime') || 0,
+                Class                => $Param{Errors}->{DateInvalid} || '',
+                Validate             => 1,
                 ValidateDateInFuture => 1,
             );
             $Self->{LayoutObject}->Block(
@@ -903,7 +898,10 @@ sub _Mask {
 
     # owner list
     if ( $Self->{Config}->{Owner} ) {
-        my %AllGroupsMembers = $Self->{UserObject}->UserList( Type => 'Long', Valid => 1 );
+        my %AllGroupsMembers = $Self->{UserObject}->UserList(
+            Type  => 'Long',
+            Valid => 1
+        );
 
         # only put possible rw agents to possible owner list
         if ( !$Self->{ConfigObject}->Get('Ticket::ChangeOwnerToEveryone') ) {
@@ -942,7 +940,10 @@ sub _Mask {
 
     # responsible list
     if ( $Self->{ConfigObject}->Get('Ticket::Responsible') && $Self->{Config}->{Responsible} ) {
-        my %AllGroupsMembers = $Self->{UserObject}->UserList( Type => 'Long', Valid => 1 );
+        my %AllGroupsMembers = $Self->{UserObject}->UserList(
+            Type  => 'Long',
+            Valid => 1
+        );
 
         # only put possible rw agents to possible owner list
         if ( !$Self->{ConfigObject}->Get('Ticket::ChangeOwnerToEveryone') ) {
@@ -967,8 +968,11 @@ sub _Mask {
             }
         }
         $Param{ResponsibleStrg} = $Self->{LayoutObject}->BuildSelection(
-            Data => { '' => '-', %AllGroupsMembers },
-            Name => 'ResponsibleID',
+            Data => {
+                '' => '-',
+                %AllGroupsMembers
+            },
+            Name        => 'ResponsibleID',
             Translation => 0,
             SelectedID  => $Param{ResponsibleID},
         );
@@ -985,7 +989,7 @@ sub _Mask {
         Type   => 'move_into',
     );
     $Param{MoveQueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
-        Data => { %MoveQueues, '' => '-' },
+        Data     => { %MoveQueues, '' => '-' },
         Multiple => 0,
         Size     => 0,
         Name     => 'QueueID',
@@ -1065,9 +1069,8 @@ sub _Mask {
             Data => \%Param,
         );
     }
-
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField   = $Self->{ConfigObject}->Get('MasterSlave::DynamicField') || '';
@@ -1158,11 +1161,19 @@ sub _Mask {
 
     # reload parent window
     if ( $Param{TicketsWereLocked} ) {
+
+        my $URL = $Self->{LastScreenOverview};
+
+        # add session if no cookies are enabled
+        if ( $Self->{SessionID} && !$Self->{SessionIDCookie} ) {
+            $URL .= ';' . $Self->{SessionName} . '=' . $Self->{SessionID};
+        }
+
         $Self->{LayoutObject}->Block(
             Name => 'ParentReload',
             Data => {
-                URL => $Self->{LastScreenOverview},
-                }
+                URL => $URL,
+            },
         );
 
         # show undo link
@@ -1181,7 +1192,10 @@ sub _Mask {
     }
 
     # get output back
-    return $Self->{LayoutObject}->Output( TemplateFile => 'AgentTicketBulk', Data => \%Param );
+    return $Self->{LayoutObject}->Output(
+        TemplateFile => 'AgentTicketBulk',
+        Data         => \%Param
+    );
 }
 
 1;

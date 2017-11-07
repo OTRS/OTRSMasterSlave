@@ -1,8 +1,7 @@
 # --
-# Kernel/Modules/AgentTicketMasterSlave.pm - common file for several modules
-# Copyright (C) 2001-2014 OTRS AG, http://otrs.com/
+# Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: https://github.com/OTRS/otrs/blob/6ef3101464f98a312d267b83e6826f541abfa2ca/Kernel/Modules/AgentTicketActionCommon.pm
+# $origin: otrs - b3bb5c9425ff08073b49b3af167d4b88e29612f0 - Kernel/Modules/AgentTicketActionCommon.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -10,12 +9,12 @@
 # --
 
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
+#package Kernel::Modules::AgentTicketActionCommon;
+
 # this module uses AgentTicketActionCommon as a base, for easy update and framework compatibility
-# special markers has been set along the file to easy spot the differences introduced by
-# OTRSMasterSlave package
-# package Kernel::Modules::AgentTicketActionCommon;
+# special markers has been set along the file to easy spot the differences introduced by OTRSMasterSlave package
 package Kernel::Modules::AgentTicketMasterSlave;
 # ---
 
@@ -28,7 +27,7 @@ use Kernel::System::DynamicField;
 use Kernel::System::DynamicField::Backend;
 use Kernel::System::VariableCheck qw(:all);
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
 use Kernel::System::MasterSlave;
 use Kernel::Language;
@@ -66,6 +65,9 @@ sub new {
     my @InvolvedUserID = $Self->{ParamObject}->GetArray( Param => 'InvolvedUserID' );
     $Self->{InvolvedUserID} = \@InvolvedUserID;
 
+    # get return module base64 string
+    $Self->{ReturnModule} = $Self->{ParamObject}->GetParam( Param => 'ReturnModule' ) || '';
+
     # create form id
     if ( !$Self->{FormID} ) {
         $Self->{FormID} = $Self->{UploadCacheObject}->FormIDCreate();
@@ -81,9 +83,8 @@ sub new {
     if ( $Self->{Config}->{Note} ) {
         $ObjectType = [ 'Ticket', 'Article' ];
     }
-
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField = $Self->{ConfigObject}->Get('MasterSlave::DynamicField');
@@ -91,7 +92,7 @@ sub new {
     if ( $MasterSlaveDynamicField && $Self->{Subaction} eq 'Store' ) {
         $Self->{Config}->{DynamicField}->{$MasterSlaveDynamicField} = 1;
     }
-#---
+# ---
 
     # get the dynamic fields for this screen
     $Self->{DynamicField} = $Self->{DynamicFieldObject}->DynamicFieldListGet(
@@ -99,9 +100,8 @@ sub new {
         ObjectType  => $ObjectType,
         FieldFilter => $Self->{Config}->{DynamicField} || {},
     );
-
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     $Self->{MasterSlaveObject} = Kernel::System::MasterSlave->new(%Param);
 
@@ -164,7 +164,8 @@ sub Run {
     $Self->{LayoutObject}->Block(
         Name => 'Properties',
         Data => {
-            FormID => $Self->{FormID},
+            FormID       => $Self->{FormID},
+            ReturnModule => $Self->{ReturnModule},
             %Ticket,
             %Param,
         },
@@ -214,8 +215,7 @@ sub Run {
                 $Output .= $Self->{LayoutObject}->Warning(
                     Message => $Self->{LayoutObject}->{LanguageObject}
                         ->Get('Sorry, you need to be the ticket owner to perform this action.'),
-                    Comment => $Self->{LayoutObject}->{LanguageObject}
-                        ->Get('Please change the owner first.'),
+                    Comment => $Self->{LayoutObject}->{LanguageObject}->Get('Please change the owner first.'),
                 );
                 $Output .= $Self->{LayoutObject}->Footer(
                     Type => 'Small',
@@ -249,15 +249,14 @@ sub Run {
         qw(
         NewStateID NewPriorityID TimeUnits ArticleTypeID Title Body Subject NewQueueID
         Year Month Day Hour Minute NewOwnerID NewOwnerType OldOwnerID NewResponsibleID
-        TypeID ServiceID SLAID Expand
+        TypeID ServiceID SLAID Expand ReturnModule
         )
         )
     {
         $GetParam{$Key} = $Self->{ParamObject}->GetParam( Param => $Key );
     }
-
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField               = $Self->{ConfigObject}->Get('MasterSlave::DynamicField') || '';
@@ -276,12 +275,11 @@ sub Run {
         next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
 
         # extract the dynamic field value form the web request
-        $DynamicFieldValues{ $DynamicFieldConfig->{Name} }
-            = $Self->{BackendObject}->EditFieldValueGet(
+        $DynamicFieldValues{ $DynamicFieldConfig->{Name} } = $Self->{BackendObject}->EditFieldValueGet(
             DynamicFieldConfig => $DynamicFieldConfig,
             ParamObject        => $Self->{ParamObject},
             LayoutObject       => $Self->{LayoutObject},
-            );
+        );
     }
 
     # convert dynamic field values into a structure for ACLs
@@ -291,8 +289,7 @@ sub Run {
         next DYNAMICFIELD if !$DynamicField;
         next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-            = $DynamicFieldValues{$DynamicField};
+        $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
     }
     $GetParam{DynamicField} = \%DynamicFieldACLParameters;
 
@@ -498,9 +495,8 @@ sub Run {
         DYNAMICFIELD:
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
             next DYNAMICFIELD
             if $DynamicFieldConfig->{Name} eq $Self->{ConfigObject}->Get('MasterSlave::DynamicField');
@@ -541,8 +537,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -754,6 +749,56 @@ sub Run {
 
         # add note
         my $ArticleID = '';
+        my $ReturnURL;
+
+        # set priority
+        if ( $Self->{Config}->{Priority} && $GetParam{NewPriorityID} ) {
+            $Self->{TicketObject}->TicketPrioritySet(
+                TicketID   => $Self->{TicketID},
+                PriorityID => $GetParam{NewPriorityID},
+                UserID     => $Self->{UserID},
+            );
+        }
+
+        # set state
+        if ( $Self->{Config}->{State} && $GetParam{NewStateID} ) {
+            $Self->{TicketObject}->TicketStateSet(
+                TicketID => $Self->{TicketID},
+                StateID  => $GetParam{NewStateID},
+                UserID   => $Self->{UserID},
+            );
+
+            # unlock the ticket after close
+            my %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
+                ID => $GetParam{NewStateID},
+            );
+
+            # set unlock on close state
+            if ( $StateData{TypeName} =~ /^close/i ) {
+                $Self->{TicketObject}->TicketLockSet(
+                    TicketID => $Self->{TicketID},
+                    Lock     => 'unlock',
+                    UserID   => $Self->{UserID},
+                );
+            }
+
+            # set pending time on pending state
+            elsif ( $StateData{TypeName} =~ /^pending/i ) {
+
+                # set pending time
+                $Self->{TicketObject}->TicketPendingTimeSet(
+                    UserID   => $Self->{UserID},
+                    TicketID => $Self->{TicketID},
+                    %GetParam,
+                );
+            }
+
+            # redirect parent window to last screen overview on closed tickets
+            if ( $StateData{TypeName} =~ /^close/i ) {
+                $ReturnURL = $Self->{LastScreenOverview} || 'Action=AgentDashboard';
+            }
+        }
+
         if ( $Self->{Config}->{Note} && ( $GetParam{Subject} || $GetParam{Body} ) ) {
 
             if ( !$GetParam{Subject} ) {
@@ -861,9 +906,8 @@ sub Run {
         DYNAMICFIELD:
         for my $DynamicFieldConfig ( @{ $Self->{DynamicField} } ) {
             next DYNAMICFIELD if !IsHashRefWithData($DynamicFieldConfig);
-
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
             if (
                 $MasterSlaveAdvancedEnabled
@@ -886,8 +930,7 @@ sub Run {
 # ---
 
             # set the object ID (TicketID or ArticleID) depending on the field configration
-            my $ObjectID
-                = $DynamicFieldConfig->{ObjectType} eq 'Article' ? $ArticleID : $Self->{TicketID};
+            my $ObjectID = $DynamicFieldConfig->{ObjectType} eq 'Article' ? $ArticleID : $Self->{TicketID};
 
             # set the value
             my $Success = $Self->{BackendObject}->ValueSet(
@@ -898,59 +941,16 @@ sub Run {
             );
         }
 
-        # set priority
-        if ( $Self->{Config}->{Priority} && $GetParam{NewPriorityID} ) {
-            $Self->{TicketObject}->TicketPrioritySet(
-                TicketID   => $Self->{TicketID},
-                PriorityID => $GetParam{NewPriorityID},
-                UserID     => $Self->{UserID},
-            );
-        }
-
-        # set state
-        if ( $Self->{Config}->{State} && $GetParam{NewStateID} ) {
-            $Self->{TicketObject}->TicketStateSet(
-                TicketID => $Self->{TicketID},
-                StateID  => $GetParam{NewStateID},
-                UserID   => $Self->{UserID},
-            );
-
-            # unlock the ticket after close
-            my %StateData = $Self->{TicketObject}->{StateObject}->StateGet(
-                ID => $GetParam{NewStateID},
-            );
-
-            # set unlock on close state
-            if ( $StateData{TypeName} =~ /^close/i ) {
-                $Self->{TicketObject}->TicketLockSet(
-                    TicketID => $Self->{TicketID},
-                    Lock     => 'unlock',
-                    UserID   => $Self->{UserID},
-                );
-            }
-
-            # set pending time on pending state
-            elsif ( $StateData{TypeName} =~ /^pending/i ) {
-
-                # set pending time
-                $Self->{TicketObject}->TicketPendingTimeSet(
-                    UserID   => $Self->{UserID},
-                    TicketID => $Self->{TicketID},
-                    %GetParam,
-                );
-            }
-
-            # redirect parent window to last screen overview on closed tickets
-            if ( $StateData{TypeName} =~ /^close/i ) {
-                return $Self->{LayoutObject}->PopupClose(
-                    URL => ( $Self->{LastScreenOverview} || 'Action=AgentDashboard' ),
-                );
-            }
+        # decode the url if present and set it as return url
+        if ( IsStringWithData( $GetParam{ReturnModule} ) ) {
+            $ReturnURL = $GetParam{ReturnModule};
         }
 
         # load new URL in parent window and close popup
+        $ReturnURL ||= "Action=AgentTicketZoom;TicketID=$Self->{TicketID};ArticleID=$ArticleID";
+
         return $Self->{LayoutObject}->PopupClose(
-            URL => "Action=AgentTicketZoom;TicketID=$Self->{TicketID};ArticleID=$ArticleID",
+            URL => $ReturnURL,
         );
     }
     elsif ( $Self->{Subaction} eq 'AJAXUpdate' ) {
@@ -978,8 +978,7 @@ sub Run {
             next DYNAMICFIELD if !$DynamicField;
             next DYNAMICFIELD if !$DynamicFieldValues{$DynamicField};
 
-            $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField }
-                = $DynamicFieldValues{$DynamicField};
+            $DynamicFieldACLParameters{ 'DynamicField_' . $DynamicField } = $DynamicFieldValues{$DynamicField};
         }
 
         # get list type
@@ -1007,6 +1006,11 @@ sub Run {
             %GetParam,
         );
         my $Services = $Self->_GetServices(
+            %GetParam,
+            CustomerUserID => $CustomerUser,
+            QueueID        => $QueueID,
+        );
+        my $Types = $Self->_GetTypes(
             %GetParam,
             CustomerUserID => $CustomerUser,
             QueueID        => $QueueID,
@@ -1148,6 +1152,14 @@ sub Run {
                     Translation  => 0,
                     Max          => 100,
                 },
+                {
+                    Name         => 'TypeID',
+                    Data         => $Types,
+                    SelectedID   => $GetParam{TypeID},
+                    PossibleNone => 1,
+                    Translation  => 0,
+                    Max          => 100,
+                },
                 @DynamicFieldAJAX,
             ],
         );
@@ -1222,8 +1234,7 @@ sub Run {
                         my %Filter = $Self->{TicketObject}->TicketAclData();
 
                         # convert Filer key => key back to key => value using map
-                        %{$PossibleValuesFilter}
-                            = map { $_ => $PossibleValues->{$_} }
+                        %{$PossibleValuesFilter} = map { $_ => $PossibleValues->{$_} }
                             keys %Filter;
                     }
                 }
@@ -1437,7 +1448,7 @@ sub _Mask {
 
         # set move queues
         $Param{QueuesStrg} = $Self->{LayoutObject}->AgentQueueListOption(
-            Data => { %MoveQueues, '' => '-' },
+            Data           => { %MoveQueues, '' => '-' },
             Multiple       => 0,
             Size           => 0,
             Class          => 'NewQueueID',
@@ -1499,8 +1510,7 @@ sub _Mask {
                 $SeenOldOwner{ $User->{UserID} } = 1;
                 push @OldOwners, {
                     Key   => $User->{UserID},
-                    Value => "$Counter: $User->{UserLastname} "
-                        . "$User->{UserFirstname} ($User->{UserLogin})"
+                    Value => "$Counter: $User->{UserFullname}"
                 };
                 $Counter++;
             }
@@ -1751,16 +1761,19 @@ sub _Mask {
 
                 next USER if $SeenInvolvedAgents{ $User->{UserID} };
 
+                my $Value = "$Counter: $User->{UserFullname}";
+                if ( $User->{OutOfOfficeMessage} ) {
+                    $Value .= " $User->{OutOfOfficeMessage}";
+                }
+
                 push @InvolvedAgents, {
-                    Key => $User->{UserID},
-                    Value =>
-                        "$Counter: $User->{UserLastname} $User->{UserFirstname} ($User->{UserLogin})"
+                    Key   => $User->{UserID},
+                    Value => $Value,
                 };
                 $Counter++;
             }
 
-            my $InvolvedAgentSize
-                = $Self->{ConfigObject}->Get('Ticket::Frontend::InvolvedAgentMaxSize') || 3;
+            my $InvolvedAgentSize = $Self->{ConfigObject}->Get('Ticket::Frontend::InvolvedAgentMaxSize') || 3;
             $Param{InvolvedAgentStrg} = $Self->{LayoutObject}->BuildSelection(
                 Data       => \@InvolvedAgents,
                 SelectedID => $Self->{InvolvedUserID},
@@ -1846,9 +1859,8 @@ sub _Mask {
             );
         }
     }
-
 # ---
-# MasterSlave
+# OTRSMasterSlave
 # ---
     # get master/slave dynamic field
     my $MasterSlaveDynamicField   = $Self->{ConfigObject}->Get('MasterSlave::DynamicField') || '';
@@ -1951,7 +1963,10 @@ sub _Mask {
     }
 
     # get output back
-    return $Self->{LayoutObject}->Output( TemplateFile => $Self->{Action}, Data => \%Param );
+    return $Self->{LayoutObject}->Output(
+        TemplateFile => $Self->{Action},
+        Data         => \%Param
+    );
 }
 
 sub _GetNextStates {
@@ -2064,10 +2079,7 @@ sub _GetOldOwners {
 
             next USER if $UserHash{ $User->{UserID} };
 
-            $UserHash{ $User->{UserID} }
-                = "$Counter: $User->{UserLastname} $User->{UserFirstname} ($User->{UserLogin})";
-        }
-        continue {
+            $UserHash{ $User->{UserID} } = "$Counter: $User->{UserFullname}";
             $Counter++;
         }
     }
@@ -2093,8 +2105,7 @@ sub _GetServices {
     my %Service;
 
     # get options for default services for unknown customers
-    my $DefaultServiceUnknownCustomer
-        = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
+    my $DefaultServiceUnknownCustomer = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
 
     # check if no CustomerUserID is selected
     # if $DefaultServiceUnknownCustomer = 0 leave CustomerUserID empty, it will not get any services
@@ -2116,6 +2127,21 @@ sub _GetServices {
 
 sub _GetSLAs {
     my ( $Self, %Param ) = @_;
+
+    # if non set customers can get default services then they should also be able to get the SLAs
+    #  for those services (this works during ticket creation).
+    # if no CustomerUserID is set, TicketSLAList will complain during AJAX updates as UserID is not
+    #  passed. See bug 11147.
+
+    # get options for default services for unknown customers
+    my $DefaultServiceUnknownCustomer = $Self->{ConfigObject}->Get('Ticket::Service::Default::UnknownCustomer');
+
+    # check if no CustomerUserID is selected
+    # if $DefaultServiceUnknownCustomer = 0 leave CustomerUserID empty, it will not get any services
+    # if $DefaultServiceUnknownCustomer = 1 set CustomerUserID to get default services
+    if ( !$Param{CustomerUserID} && $DefaultServiceUnknownCustomer ) {
+        $Param{CustomerUserID} = '<DEFAULT>';
+    }
 
     my %SLA;
     if ( $Param{ServiceID} ) {
@@ -2149,8 +2175,7 @@ sub _GetFieldsToUpdate {
 
     # set the fields that can be updateable via AJAXUpdate
     if ( !$Param{OnlyDynamicFields} ) {
-        @UpdatableFields
-            = qw(
+        @UpdatableFields = qw(
             TypeID ServiceID SLAID NewOwnerID OldOwnerID NewResponsibleID NewStateID
             NewPriorityID
         );
@@ -2171,6 +2196,21 @@ sub _GetFieldsToUpdate {
     }
 
     return \@UpdatableFields;
+}
+
+sub _GetTypes {
+    my ( $Self, %Param ) = @_;
+
+    # get type
+    my %Type;
+    if ( $Param{QueueID} || $Param{TicketID} ) {
+        %Type = $Self->{TicketObject}->TicketTypeList(
+            %Param,
+            Action => $Self->{Action},
+            UserID => $Self->{UserID},
+        );
+    }
+    return \%Type;
 }
 
 1;
