@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: otrs - d152f0ba9f7b326b4bd3b8624cc2c99944e2a956 - Kernel/Modules/AgentTicketActionCommon.pm
+# $origin: otrs - 3c117b4c21d8105d33e2b9d2c6fe3d586f19020f - Kernel/Modules/AgentTicketActionCommon.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -696,6 +696,36 @@ sub Run {
 
         my $UnlockOnAway = 1;
 
+        # move ticket to a new queue, but only if the queue was changed
+        if (
+            $Config->{Queue}
+            && $GetParam{NewQueueID}
+            && $GetParam{NewQueueID} ne $Ticket{QueueID}
+            )
+        {
+
+            # move ticket (send notification if no new owner is selected)
+            my $BodyAsText = '';
+            if ( $LayoutObject->{BrowserRichText} ) {
+                $BodyAsText = $LayoutObject->RichText2Ascii(
+                    String => $GetParam{Body} || 0,
+                );
+            }
+            else {
+                $BodyAsText = $GetParam{Body} || 0;
+            }
+            my $Move = $TicketObject->TicketQueueSet(
+                QueueID            => $GetParam{NewQueueID},
+                UserID             => $Self->{UserID},
+                TicketID           => $Self->{TicketID},
+                SendNoNotification => $GetParam{NewUserID},
+                Comment            => $BodyAsText,
+            );
+            if ( !$Move ) {
+                return $LayoutObject->ErrorScreen();
+            }
+        }
+
         # set new owner
         my @NotifyDone;
         if ( $Config->{Owner} ) {
@@ -740,36 +770,6 @@ sub Run {
                 if ( $Success && $Success eq 1 ) {
                     push @NotifyDone, $GetParam{NewResponsibleID};
                 }
-            }
-        }
-
-        # move ticket to a new queue, but only if the queue was changed
-        if (
-            $Config->{Queue}
-            && $GetParam{NewQueueID}
-            && $GetParam{NewQueueID} ne $Ticket{QueueID}
-            )
-        {
-
-            # move ticket (send notification if no new owner is selected)
-            my $BodyAsText = '';
-            if ( $LayoutObject->{BrowserRichText} ) {
-                $BodyAsText = $LayoutObject->RichText2Ascii(
-                    String => $GetParam{Body} || 0,
-                );
-            }
-            else {
-                $BodyAsText = $GetParam{Body} || 0;
-            }
-            my $Move = $TicketObject->TicketQueueSet(
-                QueueID            => $GetParam{NewQueueID},
-                UserID             => $Self->{UserID},
-                TicketID           => $Self->{TicketID},
-                SendNoNotification => $GetParam{NewUserID},
-                Comment            => $BodyAsText,
-            );
-            if ( !$Move ) {
-                return $LayoutObject->ErrorScreen();
             }
         }
 
@@ -1309,6 +1309,7 @@ sub Run {
                     SelectedID   => $GetParam{NewQueueID},
                     PossibleNone => 1,
                     Translation  => 0,
+                    TreeView     => $TreeView,
                     Max          => 100,
                 },
                 @DynamicFieldAJAX,
