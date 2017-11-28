@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: otrs - 1c2cb49026384b64beeb6c519d04189404eaf5c9 - Kernel/Output/HTML/Standard/AgentTicketBulk.tt
+# $origin: otrs - e251d980576bafb28d9a763a0cb14ccc36ea7fdd - Kernel/Output/HTML/Standard/AgentTicketBulk.tt
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -9,7 +9,7 @@
 # --
 
 [% RenderBlockStart("BulkAction") %]
-<form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data" name="compose" class="Validate">
+<form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data" name="compose" class="Validate PreventMultipleSubmits">
     <input type="hidden" name="Action" value="[% Env("Action") %]"/>
     <input type="hidden" name="Subaction" value="Do"/>
     <input type="hidden" name="NoteFormID" value="[% Data.NoteFormID | html %]"/>
