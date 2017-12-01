@@ -1,4 +1,5 @@
 #5.0.12 2017-??-??
+ - 2017-12-01 Improved wording, thanks to Balázs Úr.
 
 #5.0.11 2017-10-17
  - 2017-09-25 Updated translations, thanks to all translators.
