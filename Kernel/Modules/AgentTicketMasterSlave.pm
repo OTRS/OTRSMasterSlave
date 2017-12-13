@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2017 OTRS AG, http://otrs.com/
 # --
-# $origin: otrs - 3c117b4c21d8105d33e2b9d2c6fe3d586f19020f - Kernel/Modules/AgentTicketActionCommon.pm
+# $origin: otrs - ad240e823e7af35b788b23f7eebbc853738e0715 - Kernel/Modules/AgentTicketActionCommon.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -2590,8 +2590,9 @@ sub _GetServices {
     if ( $Param{CustomerUserID} ) {
         %Service = $Kernel::OM->Get('Kernel::System::Ticket')->TicketServiceList(
             %Param,
-            Action => $Self->{Action},
-            UserID => $Self->{UserID},
+            TicketID => $Self->{TicketID},
+            Action   => $Self->{Action},
+            UserID   => $Self->{UserID},
         );
     }
     return \%Service;
@@ -2620,8 +2621,9 @@ sub _GetSLAs {
     if ( $Param{ServiceID} ) {
         %SLA = $Kernel::OM->Get('Kernel::System::Ticket')->TicketSLAList(
             %Param,
-            Action => $Self->{Action},
-            UserID => $Self->{UserID},
+            TicketID => $Self->{TicketID},
+            Action   => $Self->{Action},
+            UserID   => $Self->{UserID},
         );
     }
     return \%SLA;
