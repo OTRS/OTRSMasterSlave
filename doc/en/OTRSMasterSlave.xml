@@ -269,42 +269,42 @@ shell> bin/otrs.Console.pl Admin::Package::Install /path/to/$Name-$Version.opm
     <section>
         <title>MasterSlave::AdvancedEnabled.</title>
         <para>Group: MasterSlave, Subgroup: Core::MasterSlave.</para>
-        <para>Enable the advanced MasterSlave part of the feature.</para>
+        <para>Enables the advanced MasterSlave part of the feature.</para>
     </section>
     <section>
         <title>MasterSlave::DynamicField.</title>
         <para>Group: MasterSlave, Subgroup: Core::MasterSlave.</para>
-        <para>Define dynamic field name for master ticket feature.</para>
+        <para>Defines dynamic field name for master ticket feature.</para>
     </section>
     <section>
         <title>MasterSlave::FollowUpdatedMaster.</title>
         <para>Group: MasterSlave, Subgroup: Core::MasterSlave.</para>
-        <para>Enable the feature that slave tickets follow the master ticket to a new master in the advanced MasterSlave mode.</para>
+        <para>Enables the feature that slave tickets follow the master ticket to a new master in the advanced MasterSlave mode.</para>
     </section>
     <section>
         <title>MasterSlave::ForwardSlaves.</title>
         <para>Group: MasterSlave, Subgroup: Core::MasterSlave.</para>
-        <para>Enable the feature to forward articles from type 'forward' of a master ticket to the customers of the slave tickets. By default (disabled) it will not forward articles from type 'forward' to the slave tickets.</para>
+        <para>Enables the feature to forward articles from type 'forward' of a master ticket to the customers of the slave tickets. By default (disabled) it will not forward articles from type 'forward' to the slave tickets.</para>
     </section>
     <section>
         <title>MasterSlave::KeepParentChildAfterUnset.</title>
         <para>Group: MasterSlave, Subgroup: Core::MasterSlave.</para>
-        <para>Enable the feature to keep parent-child link after unset of the MasterSlave state in the advanced MasterSlave mode.</para>
+        <para>Enables the feature to keep parent-child link after unset of the MasterSlave state in the advanced MasterSlave mode.</para>
     </section>
     <section>
         <title>MasterSlave::KeepParentChildAfterUpdate.</title>
         <para>Group: MasterSlave, Subgroup: Core::MasterSlave.</para>
-        <para>Enable the feature to keep parent-child link after change of the MasterSlave state in the advanced MasterSlave mode.</para>
+        <para>Enables the feature to keep parent-child link after change of the MasterSlave state in the advanced MasterSlave mode.</para>
     </section>
     <section>
         <title>MasterSlave::UnsetMasterSlave.</title>
         <para>Group: MasterSlave, Subgroup: Core::MasterSlave.</para>
-        <para>Enable the feature to unset the MasterSlave state of a ticket in the advanced MasterSlave mode.</para>
+        <para>Enables the feature to unset the MasterSlave state of a ticket in the advanced MasterSlave mode.</para>
     </section>
     <section>
         <title>MasterSlave::UpdateMasterSlave.</title>
         <para>Group: MasterSlave, Subgroup: Core::MasterSlave.</para>
-        <para>Enable the feature to change the MasterSlave state of a ticket in the advanced MasterSlave mode.</para>
+        <para>Enables the feature to change the MasterSlave state of a ticket in the advanced MasterSlave mode.</para>
     </section>
     <section>
         <title>PreApplicationModule###AgentPreMasterSlave.</title>
@@ -402,6 +402,16 @@ shell> bin/otrs.Console.pl Admin::Package::Install /path/to/$Name-$Version.opm
         <para>Sets the responsible agent of the ticket in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
     </section>
     <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###RichTextHeight.</title>
+        <para>Group: MasterSlave, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines the height for the rich text editor component for this screen. Enter number (pixels) or percent value (relative).</para>
+    </section>
+    <section>
+        <title>Ticket::Frontend::AgentTicketMasterSlave###RichTextWidth.</title>
+        <para>Group: MasterSlave, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
+        <para>Defines the width for the rich text editor component for this screen. Enter number (pixels) or percent value (relative).</para>
+    </section>
+    <section>
         <title>Ticket::Frontend::AgentTicketMasterSlave###Service.</title>
         <para>Group: MasterSlave, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
         <para>Sets the service in the ticket MasterSlave screen of a zoomed ticket in the agent interface (Ticket::Service needs to be activated).</para>
@@ -434,7 +444,7 @@ shell> bin/otrs.Console.pl Admin::Package::Install /path/to/$Name-$Version.opm
     <section>
         <title>Ticket::Frontend::AgentTicketMasterSlave###Title.</title>
         <para>Group: MasterSlave, Subgroup: Frontend::Agent::Ticket::ViewMasterSlave.</para>
-        <para>Shows the title fields in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
+        <para>Shows the title field in the ticket MasterSlave screen of a zoomed ticket in the agent interface.</para>
     </section>
     <section>
         <title>Ticket::Frontend::BulkModule###010-MasterSlave.</title>
