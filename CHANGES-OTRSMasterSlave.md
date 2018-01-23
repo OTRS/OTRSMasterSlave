@@ -1,6 +1,12 @@
-#5.0.12 2017-??-??
+#5.0.14 2018-??-??
  - 2018-01-10 Fixed bug#[10415](https://bugs.otrs.org/show_bug.cgi?id=10415) - RichTextWidth and RichTextHeight settings missing.
  - 2018-01-10 Fixed bug#[13257](https://bugs.otrs.org/show_bug.cgi?id=13257) - Legacy default subject in AgentTicketMasterSlave screen.
+
+#5.0.13 2017-12-13
+ - 2017-12-13 Updated framework files to OTRS 5.0.26.
+
+#5.0.12 2017-11-14
+ - 2017-11-14 Updated framework files to OTRS 5.0.24.
  - 2017-12-01 Improved wording, thanks to Balázs Úr.
 
 #5.0.11 2017-10-17
