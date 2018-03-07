@@ -1,4 +1,11 @@
-#4.0.8 20??-??-1??
+#4.0.10 20??-??-??
+- 2018-03-06 Updated framework files to OTRS 4.0.29.
+
+#4.0.9 2017-11-28
+- 2017-11-14 Updated framework files to OTRS 4.0.27.
+
+#4.0.8 2017-11-14
+ - 2017-11-14 Updated framework files to OTRS 4.0.26.
 
 #4.0.7 2017-10-17
  - 2017-09-12 Updated framework files to OTRS 4.0.25.
