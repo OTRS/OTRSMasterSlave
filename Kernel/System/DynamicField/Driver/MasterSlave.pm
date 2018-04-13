@@ -166,7 +166,7 @@ sub EditFieldValueValidate {
 
         # use PossibleValuesFilter if sent
         if ( defined $Param{PossibleValuesFilter} ) {
-            $PossibleValues = $Param{PossibleValuesFilter}
+            $PossibleValues = $Param{PossibleValuesFilter};
         }
         else {
 
@@ -583,7 +583,7 @@ sub SearchFieldRender {
     if ( IsHashRefWithData($HistoricalValues) ) {
         for my $Key ( sort keys %{$HistoricalValues} ) {
             if ( !$SelectionData->{$Key} ) {
-                $SelectionData->{$Key} = $HistoricalValues->{$Key}
+                $SelectionData->{$Key} = $HistoricalValues->{$Key};
             }
         }
     }
