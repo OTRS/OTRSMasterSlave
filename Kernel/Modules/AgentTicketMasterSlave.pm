@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2018 OTRS AG, http://otrs.com/
 # --
-# $origin: otrs - 6559a7a0ada76af361b47b13d2cbbea64361e6a7 - Kernel/Modules/AgentTicketActionCommon.pm
+# $origin: otrs - cab6ab4bb39bd628c331ea826aa1379c0e048104 - Kernel/Modules/AgentTicketActionCommon.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -1573,9 +1573,9 @@ sub _Mask {
             UserID => $Self->{UserID},
         );
         $Param{TypeStrg} = $LayoutObject->BuildSelection(
-            Class => 'Validate_Required Modernize ' . ( $Param{Errors}->{TypeIDInvalid} || ' ' ),
-            Data  => \%Type,
-            Name  => 'TypeID',
+            Class        => 'Validate_Required Modernize ' . ( $Param{Errors}->{TypeIDInvalid} || ' ' ),
+            Data         => \%Type,
+            Name         => 'TypeID',
             SelectedID   => $Param{TypeID},
             PossibleNone => 1,
             Sort         => 'AlphanumericValue',
@@ -1922,7 +1922,7 @@ sub _Mask {
                     YearPeriodFuture => 5,
                     DiffTime         => $ConfigObject->Get('Ticket::Frontend::PendingDiffTime')
                         || 0,
-                    Class => $Param{DateInvalid} || ' ',
+                    Class                => $Param{DateInvalid} || ' ',
                     Validate             => 1,
                     ValidateDateInFuture => 1,
                     Calendar             => $Calendar,
@@ -2332,10 +2332,10 @@ sub _Mask {
             )
         {
             $Param{StandardTemplateStrg} = $LayoutObject->BuildSelection(
-                Data       => $QueueStandardTemplates    || {},
-                Name       => 'StandardTemplateID',
-                SelectedID => $Param{StandardTemplateID} || '',
-                Class      => 'Modernize',
+                Data         => $QueueStandardTemplates || {},
+                Name         => 'StandardTemplateID',
+                SelectedID   => $Param{StandardTemplateID} || '',
+                Class        => 'Modernize',
                 PossibleNone => 1,
                 Sort         => 'AlphanumericValue',
                 Translation  => 1,

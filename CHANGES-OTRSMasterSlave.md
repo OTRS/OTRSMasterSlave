@@ -1,4 +1,5 @@
 #5.0.15 20??-??-??
+ - 2018-06-04 Updated framework files to OTRS 5.0.28.
 
 #5.0.14 2018-03-13
  - 2018-03-06 Updated framework files to OTRS 5.0.27.
