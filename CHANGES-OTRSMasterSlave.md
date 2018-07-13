@@ -1,4 +1,5 @@
 #5.0.16 20??-??-??
+ - 2018-01-10 Fixed bug#[13740](https://bugs.otrs.org/show_bug.cgi?id=13740) - Master / Slave dynamic field add screen is not modern.
 
 #5.0.15 2018-06-12
  - 2018-06-05 Code cleanup.
