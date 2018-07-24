@@ -1,5 +1,5 @@
 #5.0.16 20??-??-??
- - 2018-07-24 Updated framework files to OTRS 5.0.28.
+ - 2018-07-24 Updated framework files to OTRS 5.0.29.
  - 2018-01-10 Fixed bug#[13740](https://bugs.otrs.org/show_bug.cgi?id=13740) - Master / Slave dynamic field add screen is not modern.
 
 #5.0.15 2018-06-12
