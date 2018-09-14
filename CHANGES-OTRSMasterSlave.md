@@ -1,4 +1,5 @@
 #4.0.12 20??-??-??
+ - 2018-09-13 Updated framework files to OTRS 4.0.32.
 
 #4.0.11 2018-06-12
  - 2018-06-05 Code cleanup.
