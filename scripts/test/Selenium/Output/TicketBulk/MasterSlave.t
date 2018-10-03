@@ -102,8 +102,12 @@ $Selenium->RunTest(
         $Selenium->find_element( "Title",      'name' )->send_keys($TicketTitle);
         $Selenium->find_element("//button[\@id='SearchFormSubmit'][\@value='Run search']")->VerifiedClick();
 
-        # select first test created ticket
-        $Selenium->find_element("//input[\@value='$TicketIDs[0]']")->VerifiedClick();
+        # Select first test created ticket.
+        $Selenium->execute_script("\$('.Checkbox[value=$TicketIDs[0]]').click();");
+        sleep 1;
+        $Selenium->WaitFor(
+            JavaScript => "return typeof(\$) === 'function' && \$('input[value=$TicketIDs[0]]:checked').length"
+        );
 
         # click on bulk and switch screen
         $Selenium->find_element( "Bulk", 'link_text' )->VerifiedClick();
@@ -126,12 +130,23 @@ $Selenium->RunTest(
         $Selenium->switch_to_window( $Handles->[0] );
         $Selenium->WaitFor( WindowCount => 1 );
 
-        # select second and third test created ticket
-        $Selenium->find_element("//input[\@value='$TicketIDs[1]']")->VerifiedClick();
-        $Selenium->find_element("//input[\@value='$TicketIDs[2]']")->VerifiedClick();
+        # Wait until popup is completely loaded.
+        $Selenium->VerifiedRefresh();
 
-        # click on bulk and switch screen
-        $Selenium->find_element( "Bulk", 'link_text' )->VerifiedClick();
+        # Select second and third test created ticket
+        $Selenium->execute_script("\$('.Checkbox[value=$TicketIDs[1]]').click();");
+        sleep 1;
+        $Selenium->WaitFor(
+            JavaScript => "return typeof(\$) === 'function' && \$('input[value=$TicketIDs[1]]:checked').length"
+        );
+        $Selenium->execute_script("\$('.Checkbox[value=$TicketIDs[2]]').click();");
+        sleep 1;
+        $Selenium->WaitFor(
+            JavaScript => "return typeof(\$) === 'function' && \$('input[value=$TicketIDs[2]]:checked').length"
+        );
+
+        # Click on bulk and switch screen.
+        $Selenium->find_element( "Bulk", 'link_text' )->click();
 
         $Selenium->WaitFor( WindowCount => 2 );
         $Handles = $Selenium->get_window_handles();
