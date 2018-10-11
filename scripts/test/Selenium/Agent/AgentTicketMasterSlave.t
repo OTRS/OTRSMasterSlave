@@ -238,12 +238,8 @@ $Selenium->RunTest(
             "Slave dynamic field update value - found",
         );
 
-        # close history window
-        $Selenium->find_element( ".CancelClosePopup", 'css' )->click();
-
-        # switch window back to agent ticket zoom view of the first created test ticket
-        $Selenium->WaitFor( WindowCount => 1 );
-        $Selenium->switch_to_window( $Handles->[0] );
+        # Close history window.
+        $Selenium->close();
 
         # delete created test tickets
         for my $TicketID (@TicketIDs) {
