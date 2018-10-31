@@ -147,9 +147,9 @@ $Selenium->RunTest(
         $Selenium->execute_script(
             "\$('#DynamicField_MasterSlave').val('Master').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element( "#Subject",        'css' )->send_keys('Selenium Master Ticket');
-        $Selenium->find_element( "#RichText",       'css' )->send_keys('Selenium Master Ticket');
-        $Selenium->find_element( "#submitRichText", 'css' )->click();
+        $Selenium->find_element( "#Subject",  'css' )->send_keys('Selenium Master Ticket');
+        $Selenium->find_element( "#RichText", 'css' )->send_keys('Selenium Master Ticket');
+        $Selenium->find_element("//button[\@class='CallForAction Primary'][contains(.,'Submit')]")->click();
 
         # switch window back to agent ticket zoom view of the first created test ticket
         $Selenium->WaitFor( WindowCount => 1 );
@@ -200,15 +200,18 @@ $Selenium->RunTest(
 
         # wait until form has loaded, if necessary
         $Selenium->WaitFor(
-            JavaScript => "return typeof(\$) === 'function' && \$('#DynamicField_MasterSlave').length"
+            JavaScript => "return typeof(\$) === 'function' && \$('#submitRichText').length"
         );
+
+        sleep 1;
+        $Selenium->VerifiedRefresh();
 
         $Selenium->execute_script(
             "\$('#DynamicField_MasterSlave').val('SlaveOf:$TicketNumbers[0]').trigger('redraw.InputField').trigger('change');"
         );
-        $Selenium->find_element( "#Subject",        'css' )->send_keys('Selenium Slave Ticket');
-        $Selenium->find_element( "#RichText",       'css' )->send_keys('Selenium Slave Ticket');
-        $Selenium->find_element( "#submitRichText", 'css' )->click();
+        $Selenium->find_element( "#Subject",  'css' )->send_keys('Selenium Slave Ticket');
+        $Selenium->find_element( "#RichText", 'css' )->send_keys('Selenium Slave Ticket');
+        $Selenium->find_element("//button[\@class='CallForAction Primary'][contains(.,'Submit')]")->click();
 
         $Selenium->switch_to_window( $Handles->[0] );
         $Selenium->WaitFor( WindowCount => 1 );
