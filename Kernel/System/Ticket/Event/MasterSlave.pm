@@ -205,6 +205,7 @@ sub Run {
 
                 if (@Index) {
                     $Customer{UserEmail} = $Index[-1]{From};
+                    $Customer{UserEmail} =~ s/[>,]$//g;
                 }
             }
 
