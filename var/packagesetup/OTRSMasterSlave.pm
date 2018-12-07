@@ -313,7 +313,7 @@ sub _SetDynamicFields {
 
     # enable dynamic field for ticket zoom
     # get old configuration
-    my $WindowConfig = $ConfigObject->Get('Ticket::Frontend::AgentTicketZoom');
+    my $WindowConfig  = $ConfigObject->Get('Ticket::Frontend::AgentTicketZoom');
     my %DynamicFields = %{ $WindowConfig->{DynamicField} || {} };
 
     $DynamicFields{$MasterSlaveDynamicField} =
@@ -636,7 +636,7 @@ sub _RemoveDynamicFields {
 
     # disable dynamic field for ticket zoom
     # get old configuration
-    my $WindowConfig = $ConfigObject->Get('Ticket::Frontend::AgentTicketZoom');
+    my $WindowConfig  = $ConfigObject->Get('Ticket::Frontend::AgentTicketZoom');
     my %DynamicFields = %{ $WindowConfig->{DynamicField} || {} };
 
     if ( defined $DynamicFields{$MasterSlaveDynamicField} ) {
