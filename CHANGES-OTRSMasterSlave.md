@@ -1,5 +1,8 @@
-#5.0.20 20??-??-??
- - 2018 12-06 Updated framework files to OTRS 5.0.33.
+#5.0.21 20??-??-??
+
+#5.0.20 2018-12-14
+ - 2018-12-10 Code cleanup.
+ - 2018-12-06 Updated framework files to OTRS 5.0.33.
  - 2018-11-15 Fixed bug#[14146](https://bugs.otrs.org/show_bug.cgi?id=14146) - CheckMXRecord fails with MasterSlave Module for slave ticket.
 
 #5.0.19 2018-11-09
