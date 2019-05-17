@@ -1,7 +1,7 @@
 # --
 # Copyright (C) 2001-2019 OTRS AG, https://otrs.com/
 # --
-# $origin: otrs - 9409633f822dde39ec6fa4b45f9861ed876fb2a6 - Kernel/Modules/AgentTicketActionCommon.pm
+# $origin: otrs - edbc7371a52fc5d0032e934d2456b5f39da317f1 - Kernel/Modules/AgentTicketActionCommon.pm
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (GPL). If you
@@ -1385,6 +1385,15 @@ sub Run {
 
         # set Body var to calculated content
         $GetParam{Body} = $Body;
+
+        # Strip out external content if needed.
+        if ( $ConfigObject->Get('Ticket::Frontend::BlockLoadingRemoteContent') ) {
+            my %SafetyCheckResult = $Kernel::OM->Get('Kernel::System::HTMLUtils')->Safety(
+                String       => $GetParam{Body},
+                NoExtSrcLoad => 1,
+            );
+            $GetParam{Body} = $SafetyCheckResult{String};
+        }
 
         if ( $Self->{ReplyToArticle} ) {
             my $TicketSubjectRe = $ConfigObject->Get('Ticket::SubjectRe') || 'Re';
